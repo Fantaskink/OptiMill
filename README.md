@@ -1,4 +1,4 @@
-#Projekt beskrivelse gruppe 6:
+# Projekt beskrivelse gruppe 6:
 
 Vi går efter en løsning på at reducere Co2 udledningen frem mod 2030.
 
