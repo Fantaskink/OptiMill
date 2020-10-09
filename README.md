@@ -6,3 +6,6 @@ Politikerne skal allokere en masse penge efter grøn energi, men hvor skal vindm
 Programmet skal have nogle områder med egenskaber som elpriser, vindhastighed, befolkningstæthed og fri plads.
 Programmet skal derefter finde hvilket område der er bedst at placere en vindmølle udfra inputs som budget, kwh.
 Hej.
+
+
+Goddag mine venner 
