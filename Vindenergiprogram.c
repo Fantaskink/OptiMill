@@ -29,6 +29,7 @@ int main(void)
     
 }
 
+//Funktion som printer image.txt fil
 void print_image(FILE *fptr)
 {
     char read_string[MAX_LEN];
