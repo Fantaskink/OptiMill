@@ -29,12 +29,15 @@ int main(void)
     
 }
 
+//Funktion som printer image.txt fil
 void print_image(FILE *fptr)
 {
     char read_string[MAX_LEN];
  
     while(fgets(read_string,sizeof(read_string),fptr) != NULL)
         printf("%s",read_string);
+
+    printf("\n");
 }
 
 double calc_data(double vh) {
