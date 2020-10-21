@@ -2,9 +2,9 @@
 #include <math.h>
 #define MAX_LEN 128
 
+//Prototyper
 void print_image(FILE *fptr);
-
-calc_data(double vh);
+double calc_data(double vh);
 
 int main(void)
 {
@@ -24,7 +24,7 @@ int main(void)
  
     fclose(fptr);
  
-    printf("Vind hastigheden er: %f", get_data(data));
+    printf("Vind hastigheden er: %f", calc_data(data));
     return 0;
     
 }
@@ -37,7 +37,7 @@ void print_image(FILE *fptr)
         printf("%s",read_string);
 }
 
-calc_data(double vh) {
+double calc_data(double vh) {
 
-    return vh;
+    return vh + 1.0;
 }
