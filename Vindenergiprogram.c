@@ -36,6 +36,8 @@ void print_image(FILE *fptr)
  
     while(fgets(read_string,sizeof(read_string),fptr) != NULL)
         printf("%s",read_string);
+
+    printf("\n");
 }
 
 double calc_data(double vh) {
