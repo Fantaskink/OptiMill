@@ -24,7 +24,7 @@ int main(void)
  
     fclose(fptr);
  
-    printf("Vind hastigheden er: %f", calc_data(data));
+    printf("Vind hastigheden er: %f\n", calc_data(data));
     return 0;
     
 }
