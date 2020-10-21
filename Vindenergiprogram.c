@@ -44,4 +44,3 @@ double calc_data(double vh) {
 
     return vh + 1.0;
 }
-lhjk
