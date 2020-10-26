@@ -1,15 +1,49 @@
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #define MAX_LEN 128
 
-//Prototyper
+//Structs
+struct Area
+{
+    char name[50];
+    double wind_speed; //Meters/second
+    int inSea;
+    double land_height; //in meters
+    double tree_factor; //Between 0..1
+    double roughness; //Between 0..1
+    double dist_to_house; //In km
+    double dist_to_powergrid; //In km
+    double expenses; //In Danish Crowns
+};
+
+struct Windmill
+{
+    int price;
+    int height;
+    int wing_span;
+    int kWh;
+};
+
+//Prototypes
 void print_image(FILE *fptr);
 double calc_data(double vh);
+void print_area(struct Area area);
+double calc_area_expenses(struct Area area);
 
 int main(void)
 {
-    double data = 2.0;
-    printf("Hello Github\n");
+    struct Area Omraade1;
+
+    strcpy( Omraade1.name, "Meadow near Copenhagen");
+    Omraade1.wind_speed = 4;
+    Omraade1.inSea = 0;
+    Omraade1.land_height = 2;
+    Omraade1.tree_factor = 0;
+    Omraade1.roughness = 1;
+    Omraade1.dist_to_house = 120;
+    Omraade1.dist_to_powergrid = 5;
+    Omraade1.expenses = calc_area_expenses(Omraade1);
 
     char *filename = "image.txt";
     FILE *fptr = NULL;
@@ -21,10 +55,11 @@ int main(void)
     }
  
     print_image(fptr);
- 
     fclose(fptr);
+
+    print_area(Omraade1);
+    
  
-    printf("Vind hastigheden er: %f\n", calc_data(data));
     return 0;  
 }
 
@@ -39,7 +74,22 @@ void print_image(FILE *fptr)
     printf("\n");
 }
 
-double calc_data(double vh) {
+void print_area(struct Area area)
+{
+    printf("name: %s\n", area.name);
+    printf("Wind Speed: %.2f\n", area.wind_speed);
+    printf("InSea: %d\n", area.inSea);
+    printf("Expenses: %.2f\n", area.expenses);
+}
 
-    return vh + 1.0;
+double calc_area_expenses(struct Area area)
+{
+    double expenses = 0;
+
+    expenses = (area.dist_to_powergrid * 20000) + 
+    (area.tree_factor * 10000) +
+    (area.roughness * 10000) +
+    (area.inSea * 1000000);
+
+    return(expenses);
 }
