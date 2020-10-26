@@ -14,51 +14,65 @@ typedef enum region
 } region;
 
 //Structs
+struct Windmill
+{
+    int price; //In Danish Crowns
+    int height; //In meters
+    int wing_span; //In meters
+    int kWh; //Power production of windmill
+};
+
 struct Area
 {
     char name[50];
     region region;
     double wind_speed; //Meters/second
-    int inSea;
+    int in_sea;
     double land_height; //in meters
     double tree_factor; //Between 0..1
     double roughness; //Between 0..1
     double dist_to_house; //In km
     double dist_to_powergrid; //In km
     double expenses; //In Danish Crowns
-};
-
-struct Windmill
-{
-    int price;
-    int height;
-    int wing_span;
-    int kWh;
+    struct Windmill windmill; //Windmill used for calculating expenses
 };
 
 //Prototypes
 void print_image(FILE *fptr);
-double calc_data(double vh);
 void print_area(struct Area area);
-double calc_area_expenses(struct Area area);
+double calc_total_expenses(struct Area area);
+double calc_terrain_expenses(struct Area area);
+double calc_logging_expenses(struct Area area);
+double calc_digging_expenses(struct Area area);
+double calc_roughness_expenses(struct Area area);
 const char* get_region(struct Area area);
 
 int main(void)
 {
+    struct Windmill Vestas;
+    
+    Vestas.price = 25202400;
+    Vestas.height = 150;
+    Vestas.wing_span = 162;
+    Vestas.kWh = 6000;
+    
+
     struct Area Omraade1;
 
     strcpy( Omraade1.name, "København");
 
     Omraade1.wind_speed = 4;
     Omraade1.region = 0;
-    Omraade1.inSea = 0;
+    Omraade1.in_sea = 0;
     Omraade1.land_height = 2;
     Omraade1.tree_factor = 0;
     Omraade1.roughness = 1;
     Omraade1.dist_to_house = 120;
     Omraade1.dist_to_powergrid = 5;
-    Omraade1.expenses = calc_area_expenses(Omraade1);
+    Omraade1.windmill = Vestas;
+    Omraade1.expenses = calc_total_expenses(Omraade1);
 
+    //Image file printer
     char *filename = "image.txt";
     FILE *fptr = NULL;
  
@@ -73,7 +87,6 @@ int main(void)
 
     print_area(Omraade1);
     
- 
     return 0;  
 }
 
@@ -94,20 +107,45 @@ void print_area(struct Area area)
     printf("name: %s\n", area.name);
     printf("Region: %s\n", get_region(area)); 
     printf("Wind Speed: %.2f\n", area.wind_speed);
-    printf("InSea: %d\n", area.inSea);
-    printf("Expenses: %.2f\n", area.expenses);
+    printf("in_sea: %d\n", area.in_sea);
+    printf("Windmill price: %d\n", area.windmill.price);
+    printf("Total expenses: %.2f\n", area.expenses);
 }
-
-double calc_area_expenses(struct Area area)
+//Expense calculation functions
+double calc_total_expenses(struct Area area)
 {
     double expenses = 0;
 
-    expenses = (area.dist_to_powergrid * 20000) + 
-    (area.tree_factor * 10000) +
-    (area.roughness * 10000) +
-    (area.inSea * 1000000);
+    expenses = 
+    calc_terrain_expenses(area) + 
+    calc_digging_expenses(area) +
+    calc_digging_expenses(area) +
+    calc_roughness_expenses(area) +
+    calc_logging_expenses(area) +
+    area.windmill.price;
 
     return(expenses);
+}
+
+double calc_terrain_expenses(struct Area area)
+{
+    return(area.in_sea * 1000000);
+}
+
+double calc_digging_expenses(struct Area area)
+{
+    int PRICE_PER_KM = 200000;
+    return(area.dist_to_powergrid * PRICE_PER_KM);
+}
+
+double calc_roughness_expenses(struct Area area)
+{
+    return(area.roughness * 10000);
+}
+
+double calc_logging_expenses(struct Area area)
+{
+    return(area.tree_factor * 10000);
 }
 
 const char* get_region(struct Area area)
