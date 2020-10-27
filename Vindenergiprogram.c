@@ -192,3 +192,4 @@ const char *get_region(struct Area area)
         break;
     }
 }
+
