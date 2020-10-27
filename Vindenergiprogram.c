@@ -67,7 +67,6 @@ int main(void)
     struct Area Copenhagen;
 
     strcpy( Copenhagen.name, "København");
-
     Copenhagen.wind_speed = 4;
     Copenhagen.region = 0;
     Copenhagen.in_sea = 0;
@@ -83,7 +82,6 @@ int main(void)
     struct Area area2;
    
     strcpy (area2.name, "Sydjylland");
-    
     area2.wind_speed = 8;
     area2.region = 1;
     area2.in_sea = 0;
@@ -99,7 +97,6 @@ int main(void)
     struct Area area3;
 
     strcpy (area3.name, "Nordjylland");
-
     area3.wind_speed = 4;
     area3.region = 2;
     area3.in_sea = 0;
@@ -115,7 +112,6 @@ int main(void)
     struct Area area4;
 
     strcpy (area4.name, "Midtjylland");
-
     area4.wind_speed = 4;
     area4.region = 3;
     area4.in_sea = 0;
@@ -127,11 +123,9 @@ int main(void)
     area4.windmill = Vestas, Siemens;
     area4.expenses = calc_total_expenses(area4);
 
-
     struct Area area5;
 
     strcpy (area5.name, "Sjælland");
-
     area5.wind_speed = 4;
     area5.region = 4;
     area5.in_sea = 0;
@@ -142,8 +136,6 @@ int main(void)
     area5.dist_to_powergrid = 5;
     area5.windmill = Vestas, Siemens;
     area5.expenses = calc_total_expenses(area5);
-
-
 
     //Image file printer
     char *filename = "image.txt";
@@ -184,6 +176,7 @@ void print_area(struct Area area)
     printf("Windmill price: %d\n", area.windmill.price);
     printf("Total expenses: %.2f\n", area.expenses);
 }
+
 //Expense calculation functions
 double calc_total_expenses(struct Area area)
 {
