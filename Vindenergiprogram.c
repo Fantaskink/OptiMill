@@ -119,7 +119,6 @@ double calc_total_expenses(struct Area area)
     expenses = 
     calc_terrain_expenses(area) + 
     calc_digging_expenses(area) +
-    calc_digging_expenses(area) +
     calc_roughness_expenses(area) +
     calc_logging_expenses(area) +
     area.windmill.price;
@@ -150,7 +149,7 @@ double calc_logging_expenses(struct Area area)
 
 const char* get_region(struct Area area)
 {
-        switch (area.region)
+    switch (area.region)
     {
     case 0:
         return("Hovedstaden");
