@@ -130,7 +130,7 @@ int main(void)
 
     struct Area area5;
 
-    strcpy (area5.name, "Sjaeland");
+    strcpy (area5.name, "Sjælland");
 
     area5.wind_speed = 4;
     area5.region = 4;
@@ -238,7 +238,7 @@ const char* get_region(struct Area area)
         return("Midtjylland");
         break;
     case 4:
-        return("Sjaelland");
+        return("Sjælland");
         break;
     default:
         return("Unknown region");
