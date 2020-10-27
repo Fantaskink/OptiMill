@@ -56,19 +56,19 @@ int main(void)
     Vestas.wing_span = 162;
     Vestas.kWh = 6000;
     
-    struct Area Omraade1;
+    struct Area Copenhagen;
 
-    strcpy( Omraade1.name, "København");
-    Omraade1.wind_speed = 4;
-    Omraade1.region = 0;
-    Omraade1.in_sea = 0;
-    Omraade1.land_height = 2;
-    Omraade1.tree_factor = 0;
-    Omraade1.roughness = 1;
-    Omraade1.dist_to_house = 120;
-    Omraade1.dist_to_powergrid = 5;
-    Omraade1.windmill = Vestas;
-    Omraade1.expenses = calc_total_expenses(Omraade1);
+    strcpy( Copenhagen.name, "København");
+    Copenhagen.wind_speed = 4;
+    Copenhagen.region = 0;
+    Copenhagen.in_sea = 0;
+    Copenhagen.land_height = 2;
+    Copenhagen.tree_factor = 0;
+    Copenhagen.roughness = 1;
+    Copenhagen.dist_to_house = 120;
+    Copenhagen.dist_to_powergrid = 5;
+    Copenhagen.windmill = Vestas;
+    Copenhagen.expenses = calc_total_expenses(Copenhagen);
 
     //Image file printer
     char *filename = "image.txt";
@@ -83,7 +83,7 @@ int main(void)
     print_image(fptr);
     fclose(fptr);
 
-    print_area(Omraade1);
+    print_area(Copenhagen);
     
     return 0;  
 }
