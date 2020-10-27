@@ -11,7 +11,7 @@ typedef enum region
     Nordjylland, 
     Midtjylland, 
     Sjaelland
-} region;
+}   region;
 
 //Structs
 struct Windmill
