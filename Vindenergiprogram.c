@@ -11,7 +11,7 @@ typedef enum region
     Nordjylland, 
     Midtjylland, 
     Sjaelland
-} region;
+}   region;
 
 //Structs
 struct Windmill
@@ -56,11 +56,9 @@ int main(void)
     Vestas.wing_span = 162;
     Vestas.kWh = 6000;
     
-
     struct Area Omraade1;
 
     strcpy( Omraade1.name, "København");
-
     Omraade1.wind_speed = 4;
     Omraade1.region = 0;
     Omraade1.in_sea = 0;
@@ -103,7 +101,6 @@ void print_image(FILE *fptr)
 
 void print_area(struct Area area)
 {
-
     printf("name: %s\n", area.name);
     printf("Region: %s\n", get_region(area)); 
     printf("Wind Speed: %.2f\n", area.wind_speed);
@@ -134,6 +131,7 @@ double calc_terrain_expenses(struct Area area)
 double calc_digging_expenses(struct Area area)
 {
     int PRICE_PER_KM = 200000;
+
     return(area.dist_to_powergrid * PRICE_PER_KM);
 }
 
@@ -164,7 +162,7 @@ const char* get_region(struct Area area)
         return("Midtjylland");
         break;
     case 4:
-        return("Sjaelland");
+        return("Sjælland");
         break;
     default:
         return("Unknown region");
