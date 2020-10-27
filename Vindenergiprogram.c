@@ -64,20 +64,20 @@ int main(void)
     Siemens.kWh = 4000;
 
 
-    struct Area Omraade1;
+    struct Area Copenhagen;
 
-    strcpy( Omraade1.name, "København");
+    strcpy( Copenhagen.name, "København");
 
-    Omraade1.wind_speed = 4;
-    Omraade1.region = 0;
-    Omraade1.in_sea = 0;
-    Omraade1.land_height = 2;
-    Omraade1.tree_factor = 0;
-    Omraade1.roughness = 1;
-    Omraade1.dist_to_house = 120;
-    Omraade1.dist_to_powergrid = 5;
-    Omraade1.windmill = Vestas, Siemens;
-    Omraade1.expenses = calc_total_expenses(Omraade1);
+    Copenhagen.wind_speed = 4;
+    Copenhagen.region = 0;
+    Copenhagen.in_sea = 0;
+    Copenhagen.land_height = 2;
+    Copenhagen.tree_factor = 0;
+    Copenhagen.roughness = 1;
+    Copenhagen.dist_to_house = 120;
+    Copenhagen.dist_to_powergrid = 5;
+    Copenhagen.windmill = Vestas, Siemens;
+    Copenhagen.expenses = calc_total_expenses(Copenhagen);
 
 
     struct Area area2;
