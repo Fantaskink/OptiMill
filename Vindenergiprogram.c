@@ -40,7 +40,7 @@ struct Area
 //Prototypes
 void print_image(FILE *fptr);
 int clean_stdin();
-void user_input(int *chosen_region, int *chosen_wind_turbine, int *chosen_priority);
+void user_input(int *region, int *wind_turbine, int *priority);
 void print_area(struct Area area);
 double calc_total_expenses(struct Area area);
 double calc_terrain_expenses(struct Area area);
@@ -231,5 +231,6 @@ double calc_power_output(struct Area area)
     double air_dens = 1.2;
     double v = area.wind_speed;
     double r = area.windmill.wing_span / 2;
+
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
 }
