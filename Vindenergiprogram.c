@@ -49,7 +49,7 @@ double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
 const char *get_region(struct Area area);
 double calc_power_output(struct Area area);
-double wind_shear_calc(struct Area area, struct Windmill windmill)
+double calc_wind_shear(struct Area area, struct Windmill windmill);
 
 int main(void)
 {
@@ -72,7 +72,7 @@ int main(void)
     strcpy(Copenhagen.name, "Københavns lufthavn");
 
     Copenhagen.wind_speed = 5.1;
-    Copenhagen.wind_shear = calc_wind_speed(Copenhagen);
+    Copenhagen.wind_shear = calc_wind_shear(Copenhagen, Copenhagen.windmill);
     Copenhagen.region = Hovedstaden;
     Copenhagen.in_sea = 0;
     Copenhagen.land_height = 2;
@@ -87,6 +87,7 @@ int main(void)
     strcpy(Aarhus.name, "Aarhus Lufthavn");
 
     Aarhus.wind_speed = 3.6;
+    Aarhus.wind_shear = calc_wind_shear(Aarhus, Aarhus.windmill);
     Aarhus.region = Midtjylland;
     Aarhus.in_sea = 0;
     Aarhus.land_height = 30;
@@ -244,7 +245,7 @@ double calc_power_output(struct Area area)
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
 }
 
-double wind_shear_calc(struct Area area, struct Windmill windmill)
+double calc_wind_shear(struct Area area, struct Windmill windmill)
 {
     double wind_shear, roughness_length;
 
