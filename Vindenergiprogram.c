@@ -128,16 +128,26 @@ void user_input(int *chosen_region, int *chosen_wind_turbine, int *chosen_priori
     int region = -1;
     int wind_turbine = -1;
     int priority = -1;
-    printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
-    scanf("%d", &region);
+
+    while(region < 1 || region > 5)
+    {
+        printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
+        scanf("%d", &region);
+    }
     *chosen_region = region;
 
-    printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
-    scanf("%d", &wind_turbine);
+    while(wind_turbine < 1 || wind_turbine > 2)
+    {
+        printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
+        scanf("%d", &wind_turbine);
+    }
     *chosen_wind_turbine = wind_turbine;
 
-    printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
-    scanf("%d", &priority);
+    while(priority < 1 || priority > 2)
+    {
+        printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
+        scanf("%d", &priority);
+    }
     *chosen_priority = priority;
 }
 
