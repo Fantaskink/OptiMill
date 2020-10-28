@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128
@@ -38,7 +39,8 @@ struct Area
 
 //Prototypes
 void print_image(FILE *fptr);
-void user_input(int *chosen_region, int *chosen_wind_turbine, int *chosen_priority);
+int clean_stdin();
+void user_input(int *region, int *wind_turbine, int *priority);
 void print_area(struct Area area);
 double calc_total_expenses(struct Area area);
 double calc_terrain_expenses(struct Area area);
@@ -46,6 +48,8 @@ double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
 const char *get_region(struct Area area);
 double calc_power_output(struct Area area);
+int exp_comparator(const void *p, const void *q);
+void print_struct_array(struct Area *array, size_t len);
 
 int main(void)
 {
@@ -63,33 +67,29 @@ int main(void)
     Siemens.wing_span = 130;
     Siemens.kWh = 4000;
 
-    struct Area Copenhagen;
+    struct Area Location[2];
 
-    strcpy(Copenhagen.name, "Københavns lufthavn");
+    strcpy(Location[0].name, "Københavns lufthavn");
+    Location[0].wind_speed = 5.1;
+    Location[0].region = Hovedstaden;
+    Location[0].in_sea = 0;
+    Location[0].land_height = 2;
+    Location[0].roughness = 1;
+    Location[0].dist_to_house = 120;
+    Location[0].dist_to_powergrid = 5;
+    Location[0].windmill = Vestas;
+    Location[0].expenses = calc_total_expenses(Location[0]);
 
-    Copenhagen.wind_speed = 5.1;
-    Copenhagen.region = Hovedstaden;
-    Copenhagen.in_sea = 0;
-    Copenhagen.land_height = 2;
-    Copenhagen.roughness = 1;
-    Copenhagen.dist_to_house = 120;
-    Copenhagen.dist_to_powergrid = 5;
-    Copenhagen.windmill = Vestas;
-    Copenhagen.expenses = calc_total_expenses(Copenhagen);
-
-    struct Area Aarhus;
-
-    strcpy(Aarhus.name, "Aarhus Lufthavn");
-
-    Aarhus.wind_speed = 3.6;
-    Aarhus.region = Midtjylland;
-    Aarhus.in_sea = 0;
-    Aarhus.land_height = 30;
-    Aarhus.roughness = 0.4;
-    Aarhus.dist_to_house = 2000;
-    Aarhus.dist_to_powergrid = 5;
-    Aarhus.windmill = Siemens;
-    Aarhus.expenses = calc_total_expenses(Aarhus);
+    strcpy(Location[1].name, "Aarhus Lufthavn");
+    Location[1].wind_speed = 3.6;
+    Location[1].region = Midtjylland;
+    Location[1].in_sea = 0;
+    Location[1].land_height = 30;
+    Location[1].roughness = 0.4;
+    Location[1].dist_to_house = 2000;
+    Location[1].dist_to_powergrid = 5;
+    Location[1].windmill = Siemens;
+    Location[1].expenses = calc_total_expenses(Location[1]);
 
     //Image file printer
     char *filename = "image.txt";
@@ -106,8 +106,17 @@ int main(void)
 
     //print_area(Copenhagen);
     //printf("Power output: %f", calc_power_output(Copenhagen));
-    int chosen_region, chosen_wind_turbine, chosen_priority;
-    user_input(&chosen_region, &chosen_wind_turbine, &chosen_priority);
+    int region, wind_turbine, priority;
+    user_input(&region, &wind_turbine, &priority);
+    
+    /* --------------------------------------------------------- */
+    size_t arr_len = sizeof(Location) / sizeof(struct Area);
+
+    /* sorting structs using qsort() example */ 
+    qsort(Location, arr_len, sizeof(struct Area), exp_comparator);
+
+    /* print sorted structs */
+    print_struct_array(Location, arr_len);
     
     return 0;
 }
@@ -123,32 +132,43 @@ void print_image(FILE *fptr)
     printf("\n");
 }
 
-void user_input(int *chosen_region, int *chosen_wind_turbine, int *chosen_priority)
+int clean_stdin()
 {
-    int region = -1;
-    int wind_turbine = -1;
-    int priority = -1;
+    while (getchar()!='\n');
+    return 1;
+}
 
-    while(region < 1 || region > 5)
+void user_input(int *region, int *wind_turbine, int *priority)
+{
+    int input = 0;
+    char c;
+
+    do
     {
         printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
-        scanf("%d", &region);
     }
-    *chosen_region = region;
 
-    while(wind_turbine < 1 || wind_turbine > 2)
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 5);
+    
+    *region = input;
+
+    do
     {
         printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
-        scanf("%d", &wind_turbine);
     }
-    *chosen_wind_turbine = wind_turbine;
 
-    while(priority < 1 || priority > 2)
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
+
+    *wind_turbine = input;
+
+    do
     {
         printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
-        scanf("%d", &priority);
     }
-    *chosen_priority = priority;
+
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
+
+    *priority = input;
 }
 
 void print_area(struct Area area)
@@ -160,7 +180,7 @@ void print_area(struct Area area)
     printf("Windmill price: %d\n", area.windmill.price);
     printf("Total expenses: %.2f\n", area.expenses);
 }
-//Expense calculation functions
+//--------------------Expense calculation functions-------------------
 double calc_total_expenses(struct Area area)
 {
     double expenses = 0;
@@ -174,6 +194,7 @@ double calc_total_expenses(struct Area area)
     return (expenses);
 }
 
+//Not actual calculations
 double calc_terrain_expenses(struct Area area)
 {
     return (area.in_sea * 1000000);
@@ -185,11 +206,12 @@ double calc_digging_expenses(struct Area area)
     return (area.dist_to_powergrid * PRICE_PER_KM);
 }
 
+//Not actual calculations
 double calc_roughness_expenses(struct Area area)
 {
     return (area.roughness * 10000);
 }
-
+//---------------------------------------------------------------------
 const char *get_region(struct Area area)
 {
     switch (area.region)
@@ -214,12 +236,72 @@ const char *get_region(struct Area area)
         break;
     }
 }
+//--------------------Sorting algorithm functions-------------------
+
+//Comparator function for sorting areas expenses from high to low
+int exp_comparator(const void *p, const void *q) 
+{ 
+    struct Area *p1 = (struct Area *)p;
+    struct Area *p2 = (struct Area *)q;
+    return (int)(100.f*p2->expenses - 100.f*p1->expenses);
+} 
+
+/* Example struct array printing function */ 
+void print_struct_array(struct Area *array, size_t len) 
+{ 
+    size_t i;
+ 
+    for(i=0; i<len; i++) 
+        printf("[ Name: %s \t Expense: %.2f DKK]\n", array[i].name, array[i].expenses);
+ 
+    puts("--");
+}
+//---------------------------------------------------------------------
 
 double calc_power_output(struct Area area)
 {
     double wind_turbine_efficiency = 0.35;
     double air_dens = 1.2;
-    double v = area.wind_speed;
+    double v = area.wind_shear;
     double r = area.windmill.wing_span / 2;
+
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
+}
+
+double calc_wind_shear(struct Area area, struct Windmill windmill)
+{
+    double wind_shear, roughness_length;
+
+    //Converts roughness of the given area into roughness length
+    if(area.roughness == 0)
+        roughness_length = 0.0002;
+
+    else if (area.roughness == 0.5)
+        roughness_length = 0.0024;
+
+    else if (area.roughness == 1)
+        roughness_length = 0.03;
+
+    else if (area.roughness == 1.5)
+        roughness_length = 0.055;
+
+    else if (area.roughness == 2)
+        roughness_length = 0.1;
+
+    else if (area.roughness == 2.5)
+        roughness_length = 0.2;
+
+    else if (area.roughness == 3)
+        roughness_length = 0.4;
+
+    else if (area.roughness == 3.5)
+        roughness_length = 0.8;
+
+    else if (area.roughness == 4)
+        roughness_length = 1.6;
+
+    //formula for finding exact windspeed at a given height
+    wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
+
+    return (wind_shear);
 }
