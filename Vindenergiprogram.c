@@ -46,6 +46,7 @@ double calc_logging_expenses(struct Area area);
 double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
 const char *get_region(struct Area area);
+double calc_wind_speed(struct Area area);
 
 int main(void)
 {
