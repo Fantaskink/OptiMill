@@ -42,6 +42,7 @@ int clean_stdin();
 void user_input(int *region, int *wind_turbine, int *priority);
 void print_area(struct Area area);
 double calc_total_expenses(struct Area area, struct Windmill windmill);
+double calc_area_expenses(struct Area area);
 double calc_terrain_expenses(struct Area area);
 double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
@@ -77,6 +78,7 @@ int main(void)
     Location[0].roughness = 1;
     Location[0].dist_to_house = 120;
     Location[0].dist_to_powergrid = 5;
+    Location[0].expenses = calc_area_expenses(Location[0]);
 
     strcpy(Location[1].name, "Aarhus Lufthavn");
     Location[1].wind_speed = 3.6;
@@ -86,6 +88,7 @@ int main(void)
     Location[1].roughness = 0.4;
     Location[1].dist_to_house = 2000;
     Location[1].dist_to_powergrid = 5;
+    Location[1].expenses = calc_area_expenses(Location[1]);
 
     //Image file printer
     char *filename = "image.txt";
@@ -105,7 +108,8 @@ int main(void)
     int region, wind_turbine, priority;
     user_input(&region, &wind_turbine, &priority);
 
-    calc_total_expenses(area, windmill);
+    double total_expense = calc_total_expenses(Location[0], Vestas);
+    printf("[Name: %s \t Area expense: %.2f \t Total area expense: %.2f\n",Location[0].name, Location[0].expenses, total_expense);
     
     /* --------------------------------------------------------- */
     size_t arr_len = sizeof(Location) / sizeof(struct Area);
@@ -180,15 +184,25 @@ void print_area(struct Area area)
 //--------------------Expense calculation functions-------------------
 double calc_total_expenses(struct Area area, struct Windmill windmill)
 {
-    double expenses = 0;
+    double total_expense = 0;
 
-    expenses =
-        calc_terrain_expenses(area) +
-        calc_digging_expenses(area) +
-        calc_roughness_expenses(area) +
+    total_expense =
+        area.expenses +
         windmill.price;
 
-    return (expenses);
+    return (total_expense);
+}
+
+double calc_area_expenses(struct Area area)
+{
+    double area_expense = 0;
+
+    area_expense =
+        calc_terrain_expenses(area) +
+        calc_digging_expenses(area) +
+        calc_roughness_expenses(area);
+
+    return (area_expense);
 }
 
 //Not actual calculations
