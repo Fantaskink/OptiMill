@@ -46,7 +46,7 @@ double calc_terrain_expenses(struct Area area);
 double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
 const char *get_region(struct Area area);
-double calc_power_output(struct Area area);
+double calc_power_output(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 void print_struct_array(struct Area *array, size_t len);
 
@@ -160,7 +160,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
 
     do
     {
-        printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
+        printf("Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n");
     }
 
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
