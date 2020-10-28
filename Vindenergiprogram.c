@@ -140,6 +140,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
     {
         printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
     }
+
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 5);
     
     *region = input;
@@ -148,6 +149,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
     {
         printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
     }
+
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
 
     *wind_turbine = input;
@@ -156,6 +158,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
     {
         printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
     }
+
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
 
     *priority = input;
@@ -183,7 +186,7 @@ double calc_total_expenses(struct Area area)
 
     return (expenses);
 }
-
+//Not actual calculations
 double calc_terrain_expenses(struct Area area)
 {
     return (area.in_sea * 1000000);
@@ -194,7 +197,7 @@ double calc_digging_expenses(struct Area area)
     int PRICE_PER_KM = 200000;
     return (area.dist_to_powergrid * PRICE_PER_KM);
 }
-
+//Not actual calculations
 double calc_roughness_expenses(struct Area area)
 {
     return (area.roughness * 10000);
