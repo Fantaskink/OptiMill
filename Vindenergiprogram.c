@@ -46,7 +46,7 @@ double calc_logging_expenses(struct Area area);
 double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
 const char *get_region(struct Area area);
-double calc_wind_speed(struct Area area);
+double calc_power_output(struct Area area);
 
 int main(void)
 {
@@ -107,7 +107,8 @@ int main(void)
     print_image(fptr);
     fclose(fptr);
 
-    print_area(Aarhus);
+    print_area(Copenhagen);
+    printf("Power output: %f", calc_power_output(Copenhagen));
 
     return 0;
 }
@@ -193,11 +194,11 @@ const char *get_region(struct Area area)
     }
 }
 
-double calc_wind_speed(struct Area area)
+double calc_power_output(struct Area area)
 {
-    double efficiency = 0.35;
+    double wind_turbine_efficiency = 0.35;
     double air_dens = 1.2;
     double v = area.wind_speed;
     double r = area.windmill.wing_span / 2;
-    return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*efficiency);
+    return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
 }
