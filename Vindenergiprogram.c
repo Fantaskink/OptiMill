@@ -26,8 +26,8 @@ struct Area
 {
     char name[50];
     region region;
-    double wind_speed; //Meters/second
-    int in_sea;
+    double wind_speed;        //Meters/second
+    int in_sea;               //Is equal to 1 if the area is at sea
     double land_height;       //in meters
     double tree_factor;       //Between 0..1
     double roughness;         //Between 0..1
