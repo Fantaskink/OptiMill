@@ -106,8 +106,8 @@ int main(void)
 
     //print_area(Copenhagen);
     //printf("Power output: %f", calc_power_output(Copenhagen));
-    int chosen_region, chosen_wind_turbine, chosen_priority;
-    user_input(&chosen_region, &chosen_wind_turbine, &chosen_priority);
+    int region, wind_turbine, priority;
+    user_input(&region, &wind_turbine, &priority);
     
     return 0;
 }
@@ -123,32 +123,32 @@ void print_image(FILE *fptr)
     printf("\n");
 }
 
-void user_input(int *chosen_region, int *chosen_wind_turbine, int *chosen_priority)
+void user_input(int *region, int *wind_turbine, int *priority)
 {
-    int region = -1;
-    int wind_turbine = -1;
-    int priority = -1;
+    int input_region = -1;
+    int input_wind_turbine = -1;
+    int input_priority = -1;
 
-    while(region < 1 || region > 5)
+    while(input_region < 1 || input_region > 5)
     {
         printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
-        scanf("%d", &region);
+        scanf("%d", &input_region);
     }
-    *chosen_region = region;
+    *region = input_region;
 
-    while(wind_turbine < 1 || wind_turbine > 2)
+    while(input_wind_turbine < 1 || input_wind_turbine > 2)
     {
         printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
-        scanf("%d", &wind_turbine);
+        scanf("%d", &input_wind_turbine);
     }
-    *chosen_wind_turbine = wind_turbine;
+    *wind_turbine = input_wind_turbine;
 
-    while(priority < 1 || priority > 2)
+    while(input_priority < 1 || input_priority > 2)
     {
         printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
-        scanf("%d", &priority);
+        scanf("%d", &input_priority);
     }
-    *chosen_priority = priority;
+    *priority = input_priority;
 }
 
 void print_area(struct Area area)
