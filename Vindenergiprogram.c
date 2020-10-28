@@ -25,16 +25,16 @@ struct Windmill
 struct Area
 {
     char name[50];
-    region region;
+    region region;            //Region of the area
     double wind_speed;        //Meters/second
     int in_sea;               //Is equal to 1 if the area is at sea
-    double land_height;       //in meters
+    double land_height;       //In meters
     double tree_factor;       //Between 0..1
     double roughness;         //Between 0..1
     double dist_to_house;     //In km
     double dist_to_powergrid; //In km
     double expenses;          //In Danish Crowns
-    struct Windmill windmill; //Windmill used for calculating expenses
+    struct Windmill windmill; //Windmill used for calculating expenses and power output
 };
 
 //Prototypes
@@ -124,7 +124,6 @@ void print_image(FILE *fptr)
 
 void print_area(struct Area area)
 {
-
     printf("name: %s\n", area.name);
     printf("Region: %s\n", get_region(area));
     printf("Wind Speed: %.2f\n", area.wind_speed);
@@ -193,3 +192,11 @@ const char *get_region(struct Area area)
     }
 }
 
+double calc_wind_speed(struct Area area)
+{
+    double efficiency = 0.35;
+    double air_dens = 1.2;
+    double v = area.wind_speed;
+    double r = area.windmill.wing_span / 2;
+    return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*efficiency);
+}
