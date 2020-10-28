@@ -125,9 +125,7 @@ void print_image(FILE *fptr)
 
 void user_input(int *region, int *wind_turbine, int *priority)
 {
-    int input_region = -1;
-    int input_wind_turbine = -1;
-    int input_priority = -1;
+    int input_region, input_wind_turbine, input_priority;
 
     while(input_region < 1 || input_region > 5)
     {
