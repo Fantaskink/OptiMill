@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128
@@ -38,6 +39,7 @@ struct Area
 
 //Prototypes
 void print_image(FILE *fptr);
+int clean_stdin();
 void user_input(int *chosen_region, int *chosen_wind_turbine, int *chosen_priority);
 void print_area(struct Area area);
 double calc_total_expenses(struct Area area);
@@ -123,30 +125,40 @@ void print_image(FILE *fptr)
     printf("\n");
 }
 
+int clean_stdin()
+{
+    while (getchar()!='\n');
+    return 1;
+}
+
 void user_input(int *region, int *wind_turbine, int *priority)
 {
-    int input_region, input_wind_turbine, input_priority;
+    int input = 0;
+    char c;
 
-    while(input_region < 1 || input_region > 5)
+    do
     {
         printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
-        scanf("%d", &input_region);
     }
-    *region = input_region;
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 5);
+    
+    *region = input;
 
-    while(input_wind_turbine < 1 || input_wind_turbine > 2)
+    do
     {
         printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
-        scanf("%d", &input_wind_turbine);
     }
-    *wind_turbine = input_wind_turbine;
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
 
-    while(input_priority < 1 || input_priority > 2)
+    *wind_turbine = input;
+
+    do
     {
         printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
-        scanf("%d", &input_priority);
     }
-    *priority = input_priority;
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
+
+    *priority = input;
 }
 
 void print_area(struct Area area)
