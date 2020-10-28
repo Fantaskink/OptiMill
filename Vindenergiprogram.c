@@ -174,11 +174,10 @@ void print_area(struct Area area)
     printf("Region: %s\n", get_region(area));
     printf("Wind Speed: %.2f\n", area.wind_speed);
     printf("in_sea: %d\n", area.in_sea);
-    printf("Windmill price: %d\n", area.windmill.price);
     printf("Total expenses: %.2f\n", area.expenses);
 }
 //--------------------Expense calculation functions-------------------
-double calc_total_expenses(struct Area area)
+double calc_total_expenses(struct Area area, struct Windmill windmill)
 {
     double expenses = 0;
 
@@ -186,7 +185,7 @@ double calc_total_expenses(struct Area area)
         calc_terrain_expenses(area) +
         calc_digging_expenses(area) +
         calc_roughness_expenses(area) +
-        area.windmill.price;
+        windmill.price;
 
     return (expenses);
 }
@@ -260,7 +259,7 @@ double calc_power_output(struct Area area, struct Windmill windmill)
     double wind_turbine_efficiency = 0.35;
     double air_dens = 1.2;
     double v = calc_wind_shear(area, windmill);
-    double r = area.windmill.wing_span / 2;
+    double r = windmill.wing_span / 2;
 
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
 }
