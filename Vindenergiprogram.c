@@ -34,7 +34,6 @@ struct Area
     double dist_to_house;     //In km
     double dist_to_powergrid; //In km
     double expenses;          //In Danish Crowns
-    struct Windmill windmill; //Windmill used for calculating expenses and power output
 };
 
 //Prototypes
@@ -77,7 +76,6 @@ int main(void)
     Location[0].roughness = 1;
     Location[0].dist_to_house = 120;
     Location[0].dist_to_powergrid = 5;
-    Location[0].windmill = Vestas;
     Location[0].expenses = calc_total_expenses(Location[0]);
 
     strcpy(Location[1].name, "Aarhus Lufthavn");
@@ -88,7 +86,6 @@ int main(void)
     Location[1].roughness = 0.4;
     Location[1].dist_to_house = 2000;
     Location[1].dist_to_powergrid = 5;
-    Location[1].windmill = Siemens;
     Location[1].expenses = calc_total_expenses(Location[1]);
 
     //Image file printer
@@ -258,11 +255,11 @@ void print_struct_array(struct Area *array, size_t len)
 }
 //---------------------------------------------------------------------
 
-double calc_power_output(struct Area area)
+double calc_power_output(struct Area area, struct Windmill windmill)
 {
     double wind_turbine_efficiency = 0.35;
     double air_dens = 1.2;
-    double v = area.wind_shear;
+    double v = calc_wind_shear(area, windmill);
     double r = area.windmill.wing_span / 2;
 
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
