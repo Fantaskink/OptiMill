@@ -77,7 +77,6 @@ int main(void)
     Location[0].roughness = 1;
     Location[0].dist_to_house = 120;
     Location[0].dist_to_powergrid = 5;
-    Location[0].expenses = calc_total_expenses(Location[0]);
 
     strcpy(Location[1].name, "Aarhus Lufthavn");
     Location[1].wind_speed = 3.6;
@@ -87,7 +86,6 @@ int main(void)
     Location[1].roughness = 0.4;
     Location[1].dist_to_house = 2000;
     Location[1].dist_to_powergrid = 5;
-    Location[1].expenses = calc_total_expenses(Location[1]);
 
     //Image file printer
     char *filename = "image.txt";
@@ -106,6 +104,8 @@ int main(void)
     //printf("Power output: %f", calc_power_output(Copenhagen));
     int region, wind_turbine, priority;
     user_input(&region, &wind_turbine, &priority);
+
+    calc_total_expenses(area, windmill);
     
     /* --------------------------------------------------------- */
     size_t arr_len = sizeof(Location) / sizeof(struct Area);
