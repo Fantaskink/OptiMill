@@ -28,6 +28,7 @@ struct Area
     char name[50];
     region region;            //Region of the area
     double wind_speed;        //Meters/second
+    double wind_shear;        //Actual windspeed in meters per second
     int in_sea;               //Is equal to 1 if the area is at sea
     double land_height;       //In meters
     double roughness;         //Between 0..4
@@ -147,6 +148,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
     {
         printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
     }
+
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 5);
     
     *region = input;
@@ -155,6 +157,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
     {
         printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
     }
+
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
 
     *wind_turbine = input;
@@ -163,6 +166,7 @@ void user_input(int *region, int *wind_turbine, int *priority)
     {
         printf("Vælg prioritet:\n1. Prioriter laveste omkostninger\n2. Prioriter højeste energiproduktion\n");
     }
+
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
 
     *priority = input;
@@ -191,6 +195,7 @@ double calc_total_expenses(struct Area area)
     return (expenses);
 }
 
+//Not actual calculations
 double calc_terrain_expenses(struct Area area)
 {
     return (area.in_sea * 1000000);
@@ -202,6 +207,7 @@ double calc_digging_expenses(struct Area area)
     return (area.dist_to_powergrid * PRICE_PER_KM);
 }
 
+//Not actual calculations
 double calc_roughness_expenses(struct Area area)
 {
     return (area.roughness * 10000);
@@ -261,4 +267,42 @@ double calc_power_output(struct Area area)
     double r = area.windmill.wing_span / 2;
 
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
+}
+
+double calc_wind_shear(struct Area area, struct Windmill windmill)
+{
+    double wind_shear, roughness_length;
+
+    //Converts roughness of the given area into roughness length
+    if(area.roughness == 0)
+        roughness_length = 0.0002;
+
+    else if (area.roughness == 0.5)
+        roughness_length = 0.0024;
+
+    else if (area.roughness == 1)
+        roughness_length = 0.03;
+
+    else if (area.roughness == 1.5)
+        roughness_length = 0.055;
+
+    else if (area.roughness == 2)
+        roughness_length = 0.1;
+
+    else if (area.roughness == 2.5)
+        roughness_length = 0.2;
+
+    else if (area.roughness == 3)
+        roughness_length = 0.4;
+
+    else if (area.roughness == 3.5)
+        roughness_length = 0.8;
+
+    else if (area.roughness == 4)
+        roughness_length = 1.6;
+
+    //formula for finding exact windspeed at a given height
+    wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
+
+    return (wind_shear);
 }
