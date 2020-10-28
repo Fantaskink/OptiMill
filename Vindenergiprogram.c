@@ -263,7 +263,7 @@ double calc_power_output(struct Area area)
 {
     double wind_turbine_efficiency = 0.35;
     double air_dens = 1.2;
-    double v = area.wind_speed;
+    double v = area.wind_shear;
     double r = area.windmill.wing_span / 2;
 
     return(M_PI/2*pow(r,2)*pow(v,3)*air_dens*wind_turbine_efficiency);
