@@ -47,6 +47,7 @@ double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
 const char *get_region(struct Area area);
 double calc_power_output(struct Area area, struct Windmill windmill);
+double calc_wind_shear(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 void print_struct_array(struct Area *array, size_t len);
 
