@@ -104,8 +104,6 @@ int main(void)
     //printf("Power output: %f", calc_power_output(Copenhagen));
     int region, wind_turbine, priority;
     user_input(&region, &wind_turbine, &priority);
-
-    calc_total_expenses(area, windmill);
     
     /* --------------------------------------------------------- */
     size_t arr_len = sizeof(Location) / sizeof(struct Area);
