@@ -80,7 +80,7 @@ int main(void)
     area[0].region = Hovedstaden;
     area[0].in_sea = 0;
     area[0].land_height = 2;
-    area[0].roughness = 1;
+    area[0].roughness = 1.5;
     area[0].dist_to_house = 120;
     area[0].dist_to_powergrid = 5;
     area[0].expenses = calc_area_expenses(area[0]);
@@ -292,8 +292,17 @@ int exp_comparator(const void *p, const void *q)
 { 
     struct Area *p1 = (struct Area *)p;
     struct Area *p2 = (struct Area *)q;
-    return (int)(100.f*p2->total_expenses - 100.f*p1->total_expenses);
+    return (int)(100.f*p1->total_expenses - 100.f*p2->total_expenses);
 } 
+
+//Comparator function sorting areas kwh output from high to low
+int kwh_comparator(const void *p, const void *q){
+
+    struct Area *p1 = (struct Area *)p;
+    struct Area *p2 = (struct Area *)q;
+    return (int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
+
+}
 
 /* Example struct array printing function */ 
 void print_struct_array(struct Area *array, size_t len) 
@@ -307,14 +316,6 @@ void print_struct_array(struct Area *array, size_t len)
     puts("--");
 }
 
-//Comparator function sorting areas kwh output from high to low
-int kwh_comparator(const void *p, const void *q){
-
-    struct Area *p1 = (struct Area *)p;
-    struct Area *p2 = (struct Area *)q;
-    return (int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
-
-}
 //---------------------------------------------------------------------
 
 double calc_power_output(struct Area area, struct Windmill windmill)
