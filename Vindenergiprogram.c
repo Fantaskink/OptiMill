@@ -28,7 +28,7 @@ struct Area
 {
     char name[50];            //Name of the area
     region region;            //Region of the area
-    double wind_speed;        //Meters/second
+    double wind_speed;        //Raw wind speed of area in meters per second
     int in_sea;               //Is equal to 1 if the area is at sea
     double land_height;       //In meters
     double roughness;         //Between 0..4
@@ -157,34 +157,29 @@ int clean_stdin()
 void user_input(int *region, int *wind_turbine, int *priority)
 {
     int input = 0;
-    char c;
-
-    do
-    {
-        printf("Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n");
-    }
-
-    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 5);
+    char string1[100] = "Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
+    char string2[100] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
+    char string3[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
     
-    *region = input;
+    *region = get_input(string1, 1, 5);
 
+    *wind_turbine = get_input(string2, 1, 2);
+
+    *priority = get_input(string3, 1, 2);
+}
+
+int get_input(const char *string, int a, int b)
+{
+    char c;
+    int input = 0;
     do
     {
-        printf("Vælg vindmølle:\n1. Vestas\n2. Siemens\n");
+        printf("%s", string);
     }
 
-    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
-
-    *wind_turbine = input;
-
-    do
-    {
-        printf("Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n");
-    }
-
-    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < 1 || input > 2);
-
-    *priority = input;
+    while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < a || input > b);
+    
+    return(input);
 }
 
 //Print out all the data inside given area
@@ -204,6 +199,7 @@ void print_area_data(struct Area area)
     printf("Total expenses:\t %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
+
 //--------------------Expense calculation functions-------------------
 double calc_total_expenses(struct Area area, struct Windmill windmill)
 {
@@ -245,6 +241,7 @@ double calc_roughness_expenses(struct Area area)
 {
     return (area.roughness * 10000);
 }
+
 //---------------------------------------------------------------------
 const char *get_region(struct Area area)
 {
@@ -270,6 +267,7 @@ const char *get_region(struct Area area)
         break;
     }
 }
+
 //--------------------Sorting algorithm functions-------------------
 
 //Comparator function for sorting areas expenses from high to low
