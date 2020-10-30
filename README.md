@@ -4,3 +4,12 @@ Vores program, "Optimill", skal kunne identificere optimale placeringer til vind
 Det endelige mål ved programmet er både at øge mængden af grøn energi, som produceres af Danmarks vind- og havmøller, samt at nedsætte omkostningerne for installation af møller.
 
 Hele programmet er udarbejdet i C og compiled med gcc.
+
+Gruppemedlemmer:
+
+Emil Ramsbæk
+Jakob Saadbye
+Johan Riedel
+Laurits Lippert
+Nicolai Mandrup
+Sture Svensson
