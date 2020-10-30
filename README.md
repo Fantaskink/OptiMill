@@ -7,9 +7,9 @@ Hele programmet er udarbejdet i C og compiled med gcc.
 
 Gruppemedlemmer:
 
-Emil Ramsbæk
-Jakob Saadbye
-Johan Riedel
-Laurits Lippert
-Nicolai Mandrup
-Sture Svensson
+* Emil Ramsbæk
+* Jakob Saadbye
+* Johan Riedel
+* Laurits Lippert
+* Nicolai Mandrup
+* Sture Svensson
