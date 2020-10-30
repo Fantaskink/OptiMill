@@ -119,6 +119,9 @@ int main(void)
 
     /* print sorted structs */
     print_struct_array(Location, arr_len);
+
+    /* print wind shear of cheapest location*/
+    printf("Vindhastighed for %s i højden %d m er: %.2f m/s\n", Location[(int) region + 1].name, Vestas.height, calc_wind_shear(Location[(int) region + 1], Vestas));
     
     return 0;
 }
