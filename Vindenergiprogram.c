@@ -43,6 +43,7 @@ struct Area
 void print_image(FILE *fptr);
 int clean_stdin();
 void user_input(int *region, int *wind_turbine, int *priority);
+int get_input(const char *string, int a, int b);
 void print_area_data(struct Area area);
 double calc_total_expenses(struct Area area, struct Windmill windmill);
 double calc_area_expenses(struct Area area);
