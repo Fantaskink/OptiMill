@@ -26,12 +26,13 @@ struct Windmill
 
 struct Area
 {
+    int id;                   //ID of the area
     char name[50];            //Name of the area
     region region;            //Region of the area
     double wind_speed;        //Raw wind speed of area in meters per second
     int in_sea;               //Is equal to 1 if the area is at sea
     double land_height;       //In meters
-    double roughness;         //Between 0..4
+    double roughness;         //Roughness class: 0..4
     double dist_to_house;     //In km
     double dist_to_powergrid; //In km
     double expenses;          //In Danish Crowns
@@ -55,7 +56,7 @@ double calc_power_output(struct Area area, struct Windmill windmill);
 double calc_wind_shear(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
-void print_struct_array(struct Area *array, size_t len);
+void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index);
 
 int main(void)
 {
@@ -73,27 +74,52 @@ int main(void)
     windmill[1].wing_span = 130;
     windmill[1].kWh = 4000;
 
-    struct Area area[2];
+    struct Area area[4];
 
     strcpy(area[0].name, "Københavns lufthavn");
+    area[0].id = 0;
     area[0].wind_speed = 5.1;
     area[0].region = Hovedstaden;
     area[0].in_sea = 0;
     area[0].land_height = 2;
     area[0].roughness = 1.5;
-    area[0].dist_to_house = 120;
+    area[0].dist_to_house = 12;
     area[0].dist_to_powergrid = 5;
     area[0].expenses = calc_area_expenses(area[0]);
 
     strcpy(area[1].name, "Aarhus Lufthavn");
+    area[1].id = 1;
     area[1].wind_speed = 3.6;
     area[1].region = Midtjylland;
     area[1].in_sea = 0;
     area[1].land_height = 30;
     area[1].roughness = 1;
-    area[1].dist_to_house = 2000;
+    area[1].dist_to_house = 2;
     area[1].dist_to_powergrid = 5;
     area[1].expenses = calc_area_expenses(area[1]);
+
+    //Dummy areas:
+    strcpy(area[2].name, "Billund Lufthavn");
+    area[2].id = 2;
+    area[2].wind_speed = 4.6;
+    area[2].region = Sydjylland;
+    area[2].in_sea = 0;
+    area[2].land_height = 50;
+    area[2].roughness = 2;
+    area[2].dist_to_house = 20;
+    area[2].dist_to_powergrid = 10;
+    area[2].expenses = calc_area_expenses(area[2]);
+
+    strcpy(area[3].name, "Skagen Lufthavn");
+    area[3].id = 3;
+    area[3].wind_speed = 6.0;
+    area[3].region = Nordjylland;
+    area[3].in_sea = 0;
+    area[3].land_height = 5;
+    area[3].roughness = 0.5;
+    area[3].dist_to_house = 30;
+    area[3].dist_to_powergrid = 20;
+    area[3].expenses = calc_area_expenses(area[3]);
 
     /* ------------------------- Optimill text printer -------------------------------- */
 
@@ -111,8 +137,9 @@ int main(void)
 
     /* ------------------------- Main code -------------------------------- */
 
-    int region, wind_turbine, priority;
+    int region, wind_turbine, priority, f_index = 0;
     size_t arr_len;
+
     //Get the array length of our Area struct
     arr_len = sizeof(area) / sizeof(struct Area);
 
@@ -145,10 +172,10 @@ int main(void)
     }
 
     // Print the sorted list
-    print_struct_array(area, arr_len);
+    print_struct_array(area, arr_len, region - 1, &f_index);
 
-    //Print out all the area data of area[0]
-    print_area_data(area[0]);
+    //Print out all the area data of all the areas in given region
+    print_area_data(area[f_index]);
 
     return 0;
     //---------------------------------------------------------------------
@@ -203,6 +230,7 @@ int get_input(const char *string, int a, int b)
 void print_area_data(struct Area area)
 {
     printf("------------------------------------------------------\n");
+    printf("ID: \t\t\t %d\n", area.id);
     printf("Name:\t\t\t %s\n", area.name);
     printf("Region:\t\t\t %s\n", get_region(area));
     printf("Wind Speed:\t\t %.2f m/s\n", area.wind_speed);
@@ -304,16 +332,28 @@ int kwh_comparator(const void *p, const void *q){
 
 }
 
-/* Example struct array printing function */ 
-void print_struct_array(struct Area *array, size_t len) 
+// Prints the sorted struct in the given region and returns the first index in that list  //
+void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index) 
 { 
+    int count = 0;
     size_t i;
  
-    printf("[ Name: \t\t Total expense (kr): \t Energy output (kW) \n");
-    for(i=0; i<len; i++) 
-        printf("[ %s \t %.2f \t\t %.2f]\n", array[i].name, array[i].total_expenses, array[i].kwh_output);
- 
-    puts("--");
+    printf("ID: \t Name: \t\t Total expense (kr): \t Energy output (kW) \n");
+    for(i=0; i<len; i++)
+
+        //Printer de områder ud der har samme region som den indtastede region
+        if ((int) array[i].region == in_region)
+        {
+            count += 1;
+            printf("%d \t%s \t %.2f \t\t %.2f\n", array[i].id, array[i].name, array[i].total_expenses, array[i].kwh_output);
+            
+            //Insures the first index is only set one time.
+            if (count == 1)
+            {
+                *f_index = i;
+            }
+            
+        }
 }
 
 //---------------------------------------------------------------------
