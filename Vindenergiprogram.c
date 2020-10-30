@@ -122,7 +122,7 @@ int main(void)
     print_struct_array(Location, arr_len);
 
     /* print wind shear of cheapest location*/
-    printf("Vindhastighed for %s i højden %d m er: %.2f m/s\n", Location[(int) region + 1].name, Vestas.height, calc_wind_shear(Location[(int) region + 1], Vestas));
+    printf("Vindhastighed for %s i højden %d m er: %.2f m/s\n", Location[(int) region - 1].name, Vestas.height, calc_wind_shear(Location[(int) region - 1], Vestas));
     
     return 0;
 }
@@ -180,6 +180,7 @@ void print_area(struct Area area)
     printf("in_sea: %d\n", area.in_sea);
     printf("Total expenses: %.2f\n", area.expenses);
 }
+
 //--------------------Expense calculation functions-------------------
 double calc_total_expenses(struct Area area, struct Windmill windmill)
 {
@@ -221,6 +222,7 @@ double calc_roughness_expenses(struct Area area)
 {
     return (area.roughness * 10000);
 }
+
 //---------------------------------------------------------------------
 const char *get_region(struct Area area)
 {
@@ -246,6 +248,7 @@ const char *get_region(struct Area area)
         break;
     }
 }
+
 //--------------------Sorting algorithm functions-------------------
 
 //Comparator function for sorting areas expenses from high to low
