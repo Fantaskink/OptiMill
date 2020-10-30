@@ -119,7 +119,7 @@ int main(void)
     //Get user input
     user_input(&region, &wind_turbine, &priority);
 
-    //Calculate the kwh_output and totalexpenses given the windmill from user
+    //Calculate kwh_output and totalexpenses for all the areas
  
     for (int i = 0; i < arr_len; i++)
     {
@@ -131,11 +131,11 @@ int main(void)
     switch (priority)
     {
         
-    case 1: // Sort the Areas by expenses
+    case 1: // Sort the Areas by expenses low -> high
         qsort(area, arr_len, sizeof(struct Area), exp_comparator);
         break;
 
-    case 2: //Sort the Areas by kWh output
+    case 2: //Sort the Areas by kWh output high -> low
         qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
         break;
 
