@@ -90,7 +90,7 @@ int main(void)
     area[1].region = Midtjylland;
     area[1].in_sea = 0;
     area[1].land_height = 30;
-    area[1].roughness = 0.4;
+    area[1].roughness = 1;
     area[1].dist_to_house = 2000;
     area[1].dist_to_powergrid = 5;
     area[1].expenses = calc_area_expenses(area[1]);
@@ -110,28 +110,44 @@ int main(void)
     fclose(fptr);
 
     /* ------------------------- Main code -------------------------------- */
+
     int region, wind_turbine, priority;
+    size_t arr_len;
+    //Get the array length of our Area struct
+    arr_len = sizeof(area) / sizeof(struct Area);
 
     //Get user input
     user_input(&region, &wind_turbine, &priority);
 
-    //Get the array length of our Area struct
-    size_t arr_len = sizeof(area) / sizeof(struct Area);
+    //Calculate the kwh_output and totalexpenses given the windmill from user
+ 
+    for (int i = 0; i < arr_len; i++)
+    {
+        area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine - 1]);
+        area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine - 1]);
+    }
 
-    // Sort the Areas by expenses using qsort()
-    qsort(area, arr_len, sizeof(struct Area), exp_comparator);
+    //Run the sorting of areas given the priority from user
+    switch (priority)
+    {
+        
+    case 1: // Sort the Areas by expenses
+        qsort(area, arr_len, sizeof(struct Area), exp_comparator);
+        break;
 
-    // Print the array
+    case 2: //Sort the Areas by kWh output
+        qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
+        break;
+
+    default:
+        exit(-1);
+        break;
+    }
+
+    // Print the sorted list
     print_struct_array(area, arr_len);
 
-    //Calculate the windshear given the windmill and area
- 
-    area[0].kwh_output = calc_power_output(area[0], windmill[0]);
-    area[0].total_expenses = calc_total_expenses(area[0], windmill[0]);
-    
-
     //Print out all the area data of area[0]
-
     print_area_data(area[0]);
 
     return 0;
@@ -187,17 +203,17 @@ int get_input(const char *string, int a, int b)
 void print_area_data(struct Area area)
 {
     printf("------------------------------------------------------\n");
-    printf("Name:\t %s\n", area.name);
-    printf("Region:\t %s\n", get_region(area));
-    printf("Wind Speed:\t %.2f m/s\n", area.wind_speed);
-    printf("in_sea:\t %d\n", area.in_sea);
-    printf("Land height:\t %.2f m\n", area.land_height);
+    printf("Name:\t\t\t %s\n", area.name);
+    printf("Region:\t\t\t %s\n", get_region(area));
+    printf("Wind Speed:\t\t %.2f m/s\n", area.wind_speed);
+    printf("in_sea:\t\t\t %d\n", area.in_sea);
+    printf("Land height:\t\t %.2f m\n", area.land_height);
     printf("Roughness class:\t %.2f\n", area.roughness);
-    printf("Dist to nearest house:\t %.2f m\n", area.dist_to_house);
-    printf("Distance to powergrid:\t %.2f m\n", area.dist_to_powergrid);
+    printf("Dist to nearest house:\t %.2f km\n", area.dist_to_house);
+    printf("Distance to powergrid:\t %.2f km\n", area.dist_to_powergrid);
     printf("Total kwh output:\t %.2f kW\n", area.kwh_output);
     printf("Terrain expenses:\t %.2f kr\n", area.expenses);
-    printf("Total expenses:\t %.2f kr\n", area.total_expenses);
+    printf("Total expenses:\t\t %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
 
@@ -284,8 +300,9 @@ void print_struct_array(struct Area *array, size_t len)
 { 
     size_t i;
  
+    printf("[ Name: \t\t Total expense (kr): \t Energy output (kW) \n");
     for(i=0; i<len; i++) 
-        printf("[ Name: %s \t Total expense: %.2f DKK]\n", array[i].name, array[i].total_expenses);
+        printf("[ %s \t %.2f \t\t %.2f]\n", array[i].name, array[i].total_expenses, array[i].kwh_output);
  
     puts("--");
 }
