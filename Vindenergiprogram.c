@@ -71,7 +71,7 @@ int main(void)
 
     struct Area Location[2];
 
-    strcpy(Location[0].name, "Københavns lufthavn");
+    strcpy(Location[0].name, "Københavns Lufthavn");
     Location[0].wind_speed = 5.1;
     Location[0].region = Hovedstaden;
     Location[0].in_sea = 0;
