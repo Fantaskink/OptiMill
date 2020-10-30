@@ -36,8 +36,8 @@ struct Area
     double dist_to_house;     //In km
     double dist_to_powergrid; //In km
     double expenses;          //In Danish Crowns
-    double total_expenses;    //Expenses with windmill
-    double kwh_output;        //kWh output of the specific area taken account with windmill
+    double total_expenses;    //Expenses including wind turbine expenses
+    double kwh_output;        //kWh output of the specific area with regards to chosen wind turbine
 };
 
 //Prototypes
