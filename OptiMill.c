@@ -128,7 +128,7 @@ int main(void)
 
     if ((fptr = fopen(filename, "r")) == NULL)
     {
-        fprintf(stderr, "error opening %s\n", filename);
+        fprintf(stderr, "Fejl ved åbning %s\n", filename);
         return 1;
     }
 
@@ -231,17 +231,17 @@ void print_area_data(struct Area area)
 {
     printf("------------------------------------------------------\n");
     printf("ID: \t\t\t %d\n", area.id);
-    printf("Name:\t\t\t %s\n", area.name);
+    printf("Navn:\t\t\t %s\n", area.name);
     printf("Region:\t\t\t %s\n", get_region(area));
-    printf("Wind Speed:\t\t %.2f m/s\n", area.wind_speed);
-    printf("Under the sea:\t\t\t %d\n", area.in_sea);
-    printf("Land height:\t\t %.2f m\n", area.land_height);
-    printf("Roughness class:\t %.2f\n", area.roughness);
-    printf("Dist to nearest house:\t %.2f km\n", area.dist_to_house);
-    printf("Distance to powergrid:\t %.2f km\n", area.dist_to_powergrid);
-    printf("Total kwh output:\t %.2f kW\n", area.kwh_output);
-    printf("Terrain expenses:\t %.2f kr\n", area.expenses);
-    printf("Total expenses:\t\t %.2f kr\n", area.total_expenses);
+    printf("Vindhastighed:\t\t %.2f m/s\n", area.wind_speed);
+    printf("På havet:\t\t\t %d\n", area.in_sea);
+    printf("Land højde:\t\t %.2f m\n", area.land_height);
+    printf("Ruhedsklasse:\t %.2f\n", area.roughness);
+    printf("Afstand til nærmeste hus:\t %.2f km\n", area.dist_to_house);
+    printf("Afstand til elnettet:\t %.2f km\n", area.dist_to_powergrid);
+    printf("Totalt kwh output:\t %.2f kW\n", area.kwh_output);
+    printf("Terræn omkostninger:\t %.2f kr\n", area.expenses);
+    printf("Totale omkostninger:\t\t %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
 
@@ -308,7 +308,7 @@ const char *get_region(struct Area area)
         return ("Sjaelland");
         break;
     default:
-        return ("Unknown region");
+        return ("Ukendt region");
         break;
     }
 }
@@ -338,7 +338,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
     int count = 0;
     size_t i;
  
-    printf("ID: \t Name: \t\t Total expense (kr): \t Energy output (kW) \n");
+    printf("ID: \t Navn: \t\t Totale omkostninger (kr): \t Energi output (kW) \n");
     for(i=0; i<len; i++)
     {
         //Printer de områder ud der har samme region som den indtastede region
