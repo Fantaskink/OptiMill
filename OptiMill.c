@@ -274,7 +274,7 @@ double calc_terrain_expenses(struct Area area)
 {
     return (area.in_sea * 1000000);
 }
-
+//Approximation of cable excavation and construction fees
 double calc_digging_expenses(struct Area area)
 {
     int PRICE_PER_KM = 200000;
@@ -324,12 +324,11 @@ int exp_comparator(const void *p, const void *q)
 } 
 
 //Comparator function sorting areas kwh output from high to low
-int kwh_comparator(const void *p, const void *q){
-
+int kwh_comparator(const void *p, const void *q)
+{
     struct Area *p1 = (struct Area *)p;
     struct Area *p2 = (struct Area *)q;
     return (int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
-
 }
 
 // Prints the sorted struct in the given region and returns the first index in that list  //
@@ -352,7 +351,6 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
             {
                 *f_index = i;
             }
-            
         }
     }
 }
