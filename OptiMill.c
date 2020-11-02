@@ -90,7 +90,7 @@ int main(void)
     strcpy(area[1].name, "Aarhus Lufthavn");
     area[1].id = 1;
     area[1].wind_speed = 3.6;
-    area[1].region = Hovedstaden;
+    area[1].region = Midtjylland;
     area[1].in_sea = 0;
     area[1].land_height = 30;
     area[1].roughness = 1;
@@ -102,7 +102,7 @@ int main(void)
     strcpy(area[2].name, "Billund Lufthavn");
     area[2].id = 2;
     area[2].wind_speed = 4.6;
-    area[2].region = Hovedstaden;
+    area[2].region = Sydjylland;
     area[2].in_sea = 0;
     area[2].land_height = 50;
     area[2].roughness = 2;
@@ -113,7 +113,7 @@ int main(void)
     strcpy(area[3].name, "Skagen Hovedgade");
     area[3].id = 3;
     area[3].wind_speed = 6.0;
-    area[3].region = Hovedstaden;
+    area[3].region = Nordjylland;
     area[3].in_sea = 0;
     area[3].land_height = 5;
     area[3].roughness = 0.5;
@@ -158,11 +158,11 @@ int main(void)
     //Run the sorting of areas given the priority from user
     switch (priority)
     {
-    case 1: // Sort the Areas by expenses low -> high
+    case 0: // Sort the Areas by expenses low -> high
         qsort(area, arr_len, sizeof(struct Area), exp_comparator);
         break;
 
-    case 2: //Sort the Areas by kWh output high -> low
+    case 1: //Sort the Areas by kWh output high -> low
         qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
         break;
 
