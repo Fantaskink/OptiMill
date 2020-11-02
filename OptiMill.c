@@ -128,7 +128,7 @@ int main(void)
 
     if ((fptr = fopen(filename, "r")) == NULL)
     {
-        fprintf(stderr, "Fejl ved åbning %s\n", filename);
+        fprintf(stderr, "Fejl ved indlæsning %s\n", filename);
         return 1;
     }
 
@@ -235,13 +235,13 @@ void print_area_data(struct Area area)
     printf("Region:\t\t\t %s\n", get_region(area));
     printf("Vindhastighed:\t\t %.2f m/s\n", area.wind_speed);
     printf("På havet:\t\t\t %d\n", area.in_sea);
-    printf("Land højde:\t\t %.2f m\n", area.land_height);
-    printf("Ruhedsklasse:\t %.2f\n", area.roughness);
+    printf("Landhøjde:\t\t %.2f m\n", area.land_height);
+    printf("Rughedsklasse:\t %.2f\n", area.roughness);
     printf("Afstand til nærmeste hus:\t %.2f km\n", area.dist_to_house);
-    printf("Afstand til elnettet:\t %.2f km\n", area.dist_to_powergrid);
-    printf("Totalt kwh output:\t %.2f kW\n", area.kwh_output);
-    printf("Terræn omkostninger:\t %.2f kr\n", area.expenses);
-    printf("Totale omkostninger:\t\t %.2f kr\n", area.total_expenses);
+    printf("Afstand til el-nettet:\t %.2f km\n", area.dist_to_powergrid);
+    printf("Samlede kwh produktion:\t %.2f kW\n", area.kwh_output);
+    printf("Terrænomkostninger:\t %.2f kr\n", area.expenses);
+    printf("Samlede omkostninger:\t\t %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
 
@@ -338,7 +338,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
     int count = 0;
     size_t i;
  
-    printf("ID: \t Navn: \t\t Totale omkostninger (kr): \t Energi output (kW) \n");
+    printf("ID: \t Navn: \t\t Samlede omkostninger (kr): \t Energiproduktion (kW) \n");
     for(i=0; i<len; i++)
     {
         //Printer de områder ud der har samme region som den indtastede region
