@@ -76,7 +76,7 @@ int main(void)
 
     struct Area area[4];
 
-    strcpy(area[0].name, "Københavns lufthavn");
+    strcpy(area[0].name, "Københavns Lufthavn");
     area[0].id = 0;
     area[0].wind_speed = 5.1;
     area[0].region = Hovedstaden;
@@ -150,8 +150,8 @@ int main(void)
  
     for (int i = 0; i < arr_len; i++)
     {
-        area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine - 1]);
-        area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine - 1]);
+        area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
+        area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
     }
 
     //Run the sorting of areas given the priority from user
@@ -172,7 +172,7 @@ int main(void)
     }
 
     // Print the sorted list
-    print_struct_array(area, arr_len, region - 1, &f_index);
+    print_struct_array(area, arr_len, region, &f_index);
 
     //Print out all the area data of all the areas in given region
     print_area_data(area[f_index]);
@@ -205,11 +205,11 @@ void user_input(int *region, int *wind_turbine, int *priority)
     char string2[100] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
     char string3[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
     
-    *region = get_input(string1, 1, 5);
+    *region = get_input(string1, 1, 5) - 1;
 
-    *wind_turbine = get_input(string2, 1, 2);
+    *wind_turbine = get_input(string2, 1, 2) - 1;
 
-    *priority = get_input(string3, 1, 2);
+    *priority = get_input(string3, 1, 2) - 1;
 }
 
 int get_input(const char *string, int a, int b)
