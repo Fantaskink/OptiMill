@@ -236,7 +236,7 @@ void print_area_data(struct Area area)
     printf("Vindhastighed:\t\t %.2f m/s\n", area.wind_speed);
     printf("På havet:\t\t\t %d\n", area.in_sea);
     printf("Landhøjde:\t\t %.2f m\n", area.land_height);
-    printf("Rughedsklasse:\t %.2f\n", area.roughness);
+    printf("Ruhedsklasse:\t %.2f\n", area.roughness);
     printf("Afstand til nærmeste hus:\t %.2f km\n", area.dist_to_house);
     printf("Afstand til el-nettet:\t %.2f km\n", area.dist_to_powergrid);
     printf("Samlede kwh produktion:\t %.2f kW\n", area.kwh_output);
