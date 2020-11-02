@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#define MAX_LEN 128
+#define MAX_LEN 128 //For image printing. Laurits ved det
 
 //enumerators
 typedef enum region
@@ -110,7 +110,7 @@ int main(void)
     area[2].dist_to_powergrid = 10;
     area[2].expenses = calc_area_expenses(area[2]);
 
-    strcpy(area[3].name, "Skagen Lufthavn");
+    strcpy(area[3].name, "Skagen Hovedgade");
     area[3].id = 3;
     area[3].wind_speed = 6.0;
     area[3].region = Hovedstaden;
@@ -121,7 +121,7 @@ int main(void)
     area[3].dist_to_powergrid = 20;
     area[3].expenses = calc_area_expenses(area[3]);
 
-    /* ------------------------- Optimill text printer -------------------------------- */
+    /* ------------------------- Optimill loco printer -------------------------------- */
 
     char *filename = "image.txt";
     FILE *fptr = NULL;
@@ -141,9 +141,10 @@ int main(void)
     size_t arr_len;
 
     //Get the array length of our Area struct
+    /* Find ud af hvad sizeof(struct Area) giver*/
     arr_len = sizeof(area) / sizeof(struct Area);
 
-    //Get user input
+    //Get user input.
     user_input(&region, &wind_turbine, &priority);
 
     //Calculate kwh_output and totalexpenses for all the areas
@@ -157,7 +158,6 @@ int main(void)
     //Run the sorting of areas given the priority from user
     switch (priority)
     {
-        
     case 1: // Sort the Areas by expenses low -> high
         qsort(area, arr_len, sizeof(struct Area), exp_comparator);
         break;
@@ -234,7 +234,7 @@ void print_area_data(struct Area area)
     printf("Name:\t\t\t %s\n", area.name);
     printf("Region:\t\t\t %s\n", get_region(area));
     printf("Wind Speed:\t\t %.2f m/s\n", area.wind_speed);
-    printf("in_sea:\t\t\t %d\n", area.in_sea);
+    printf("Under the sea:\t\t\t %d\n", area.in_sea);
     printf("Land height:\t\t %.2f m\n", area.land_height);
     printf("Roughness class:\t %.2f\n", area.roughness);
     printf("Dist to nearest house:\t %.2f km\n", area.dist_to_house);
@@ -340,7 +340,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
  
     printf("ID: \t Name: \t\t Total expense (kr): \t Energy output (kW) \n");
     for(i=0; i<len; i++)
-
+    {
         //Printer de områder ud der har samme region som den indtastede region
         if ((int) array[i].region == in_region)
         {
@@ -354,6 +354,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
             }
             
         }
+    }
 }
 
 //---------------------------------------------------------------------
