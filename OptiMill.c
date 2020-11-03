@@ -42,8 +42,9 @@ struct Area
 
 //Prototypes
 void print_image(FILE *fptr);
+void user_input();
 int clean_stdin();
-void user_input(int *region, int *wind_turbine, int *priority);
+void get_priority(int *region, int *wind_turbine, int *priority);
 int get_input(const char *string, int a, int b);
 void print_area_data(struct Area area);
 double calc_total_expenses(struct Area area, struct Windmill windmill);
@@ -121,7 +122,7 @@ int main(void)
     area[3].dist_to_powergrid = 20;
     area[3].expenses = calc_area_expenses(area[3]);
 
-    /* ------------------------- Optimill loco printer -------------------------------- */
+    /* ------------------------- Optimill logo printer -------------------------------- */
 
     char *filename = "image.txt";
     FILE *fptr = NULL;
@@ -135,50 +136,76 @@ int main(void)
     print_image(fptr);
     fclose(fptr);
 
+    //Get user input.
+    user_input();
+    
+    return 0;
+    //---------------------------------------------------------------------
+}
+
+void user_input()
+{
+    int quit = 0;
+    int region, wind_turbine, priority, input;
+
     /* ------------------------- Main code -------------------------------- */
 
-    int region, wind_turbine, priority, f_index = 0;
+    int f_index = 0;
     size_t arr_len;
 
     //Get the array length of our Area struct
     /* Find ud af hvad sizeof(struct Area) giver*/
     arr_len = sizeof(area) / sizeof(struct Area);
 
-    //Get user input.
-    user_input(&region, &wind_turbine, &priority);
-
-    //Calculate kwh_output and totalexpenses for all the areas
- 
-    for (int i = 0; i < arr_len; i++)
+    while (!quit)
     {
-        area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
-        area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
+        char string1[100] = "1. Vælg prioriteter:\n2. Luk program\n";
+        int input = get_input(string1, 1, 2);
+
+        switch (input)
+        {
+        case 1:
+            get_priority(&region, &wind_turbine, &priority);
+            break;
+        
+        case 2:
+            quit = 1;
+            break;
+
+        default:
+            break;
+        }
+
+        //Calculate kwh_output and totalexpenses for all the areas
+        for (int i = 0; i < arr_len; i++)
+        {
+            area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
+            area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
+        }
+
+        //Run the sorting of areas given the priority from user
+        switch (priority)
+        {
+        case 0: // Sort the Areas by expenses low -> high
+            qsort(area, arr_len, sizeof(struct Area), exp_comparator);
+            break;
+
+        case 1: //Sort the Areas by kWh output high -> low
+            qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
+            break;
+
+        default:
+            exit(-1);
+            break;
+        }
+
+        // Print the sorted list
+        print_struct_array(area, arr_len, region, &f_index);
+
+        //Print out all the area data of all the areas in given region
+        print_area_data(area[f_index]);
+
     }
-
-    //Run the sorting of areas given the priority from user
-    switch (priority)
-    {
-    case 0: // Sort the Areas by expenses low -> high
-        qsort(area, arr_len, sizeof(struct Area), exp_comparator);
-        break;
-
-    case 1: //Sort the Areas by kWh output high -> low
-        qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
-        break;
-
-    default:
-        exit(-1);
-        break;
-    }
-
-    // Print the sorted list
-    print_struct_array(area, arr_len, region, &f_index);
-
-    //Print out all the area data of all the areas in given region
-    print_area_data(area[f_index]);
-
-    return 0;
-    //---------------------------------------------------------------------
 }
 
 //Takes image.txt file and prints to terminal (Technically not our own code)
@@ -198,7 +225,7 @@ int clean_stdin()
     return 1;
 }
 
-void user_input(int *region, int *wind_turbine, int *priority)
+void get_priority(int *region, int *wind_turbine, int *priority)
 {
     int input = 0;
     char string1[100] = "Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
@@ -295,18 +322,23 @@ const char *get_region(struct Area area)
     case 0:
         return ("Hovedstaden");
         break;
+
     case 1:
         return ("Sydjylland");
         break;
+
     case 2:
         return ("Nordjylland");
         break;
+
     case 3:
         return ("Midtjylland");
         break;
+
     case 4:
         return ("Sjaelland");
         break;
+
     default:
         return ("Ukendt region");
         break;
@@ -360,7 +392,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
 double calc_power_output(struct Area area, struct Windmill windmill)
 {
     double W;
-    double wind_turbine_efficiency = 0.35;      
+    double wind_turbine_efficiency = 0.35;
     double air_dens = 1.2;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
