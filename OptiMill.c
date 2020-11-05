@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
+#define AREA_SIZE 4
 
 //enumerators
 typedef enum region
@@ -60,6 +61,47 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
 
 int main(void)
 {
+    int ID, IN_SEA, REGION;                   
+    char NAME[50];                      
+    double  WIND_SPEED, LAND_HEIGHT,
+            ROUGHNESS, DIST_TO_HOUSE,
+            DIST_TO_POWERGRID;                   
+
+
+    //Create Struct Array
+    struct Area area[AREA_SIZE];
+
+    //Read from data file
+
+    FILE* data = fopen("data.txt", "r");
+
+    if (data == NULL)
+    {
+        printf("Kunne ikke indlæse datafilen!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    //Transfer all the data from data file into every field of struct array
+    int i = 0;
+    ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUGHEDSKLASSE, TIL_HUS, TIL_ELNET
+    while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
+                        &ID, &NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
+                        &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
+    {
+    
+        area[i].id = ID;
+        strcpy(area[i].name, NAME);
+        area[i].region = REGION;
+        area[i].wind_speed = WIND_SPEED;
+        area[i].in_sea = IN_SEA;
+        area[i].land_height = LAND_HEIGHT;
+        area[i].roughness = ROUGHNESS;
+        area[i].dist_to_house = DIST_TO_HOUSE;
+        area[i].dist_to_powergrid = DIST_TO_POWERGRID;
+
+        i++;
+    }
+    
     struct Windmill windmill[2];
 
     strcpy(windmill[0].name, "Vestas");
@@ -73,53 +115,6 @@ int main(void)
     windmill[1].height = 155;
     windmill[1].wing_span = 130;
     windmill[1].kWh = 4000;
-
-    struct Area area[4];
-
-    strcpy(area[0].name, "Københavns Lufthavn");
-    area[0].id = 0;
-    area[0].wind_speed = 5.1;
-    area[0].region = Hovedstaden;
-    area[0].in_sea = 0;
-    area[0].land_height = 2;
-    area[0].roughness = 1.5;
-    area[0].dist_to_house = 12;
-    area[0].dist_to_powergrid = 5;
-    area[0].expenses = calc_area_expenses(area[0]);
-
-    strcpy(area[1].name, "Aarhus Lufthavn");
-    area[1].id = 1;
-    area[1].wind_speed = 3.6;
-    area[1].region = Midtjylland;
-    area[1].in_sea = 0;
-    area[1].land_height = 30;
-    area[1].roughness = 1;
-    area[1].dist_to_house = 2;
-    area[1].dist_to_powergrid = 5;
-    area[1].expenses = calc_area_expenses(area[1]);
-
-    //Dummy areas:
-    strcpy(area[2].name, "Billund Lufthavn");
-    area[2].id = 2;
-    area[2].wind_speed = 4.6;
-    area[2].region = Sydjylland;
-    area[2].in_sea = 0;
-    area[2].land_height = 50;
-    area[2].roughness = 2;
-    area[2].dist_to_house = 20;
-    area[2].dist_to_powergrid = 10;
-    area[2].expenses = calc_area_expenses(area[2]);
-
-    strcpy(area[3].name, "Skagen Hovedgade");
-    area[3].id = 3;
-    area[3].wind_speed = 6.0;
-    area[3].region = Nordjylland;
-    area[3].in_sea = 0;
-    area[3].land_height = 5;
-    area[3].roughness = 0.5;
-    area[3].dist_to_house = 30;
-    area[3].dist_to_powergrid = 20;
-    area[3].expenses = calc_area_expenses(area[3]);
 
     /* ------------------------- Optimill logo printer -------------------------------- */
 
@@ -250,17 +245,17 @@ int get_input(const char *string, int a, int b)
 void print_area_data(struct Area area)
 {
     printf("------------------------------------------------------\n");
-    printf("ID: \t\t\t %d\n", area.id);
-    printf("Navn:\t\t\t %s\n", area.name);
-    printf("Region:\t\t\t %s\n", get_region(area));
-    printf("Vindhastighed:\t\t %.2f m/s\n", area.wind_speed);
+    printf("ID: \t\t\t\t %d\n", area.id);
+    printf("Navn:\t\t\t\t %s\n", area.name);
+    printf("Region:\t\t\t\t %s\n", get_region(area));
+    printf("Vindhastighed:\t\t\t %.2f m/s\n", area.wind_speed);
     printf("På havet:\t\t\t %d\n", area.in_sea);
-    printf("Landhøjde:\t\t %.2f m\n", area.land_height);
-    printf("Ruhedsklasse:\t %.2f\n", area.roughness);
+    printf("Landhøjde:\t\t\t %.2f m\n", area.land_height);
+    printf("Ruhedsklasse:\t\t\t %.2f\n", area.roughness);
     printf("Afstand til nærmeste hus:\t %.2f km\n", area.dist_to_house);
-    printf("Afstand til el-nettet:\t %.2f km\n", area.dist_to_powergrid);
-    printf("Samlede kwh produktion:\t %.2f kW\n", area.kwh_output);
-    printf("Terrænomkostninger:\t %.2f kr\n", area.expenses);
+    printf("Afstand til el-nettet:\t\t %.2f km\n", area.dist_to_powergrid);
+    printf("Samlede kwh produktion:\t\t %.2f kW\n", area.kwh_output);
+    printf("Terrænomkostninger:\t\t %.2f kr\n", area.expenses);
     printf("Samlede omkostninger:\t\t %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
