@@ -142,12 +142,12 @@ int main(void)
 
     int f_index = 0;
     int quit = 0;
-    int region = -1; 
-    int wind_turbine = -1; 
-    int priority = -1;
-    int budget = -1; 
+    int region; 
+    int wind_turbine; 
+    int priority;
+    int budget; 
     int input = 0;
-    int calculate = -1;
+    int calculate = 0;
     size_t arr_len;
     
 
@@ -183,7 +183,7 @@ int main(void)
             break;
         }
 
-        if(calculate == 1 && wind_turbine != -1 && region != -1 && priority != -1 && quit != 1)
+        if(calculate == 1 && wind_turbine > 0 && region > 0 && budget > 0 && priority > -1 && quit > 0)
         {
             //Calculate kwh_output and total expenses for all the areas
             for (int i = 0; i < arr_len; i++)
@@ -215,10 +215,13 @@ int main(void)
         else if(quit != 1)
         {
             printf("Utilstrækkeligt input\n");
+            calculate = 0;
         }
         
     }
     //---------------------------------------------------------------------
+    printf("donzo");
+    return 0;
 }
 
 //Takes image.txt file and prints to terminal (Technically not our own code)
