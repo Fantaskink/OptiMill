@@ -44,7 +44,10 @@ struct Area
 //Prototypes
 void print_image(FILE *fptr);
 int clean_stdin();
-void get_priority(int *region, int *wind_turbine, int *priority);
+int get_region();
+int get_wind_turbine();
+int get_priority();
+int get_budget();
 int get_input(const char *string, int a, int b);
 void print_area_data(struct Area area);
 double calc_total_expenses(struct Area area, struct Windmill windmill);
@@ -52,7 +55,7 @@ double calc_area_expenses(struct Area area);
 double calc_terrain_expenses(struct Area area);
 double calc_digging_expenses(struct Area area);
 double calc_roughness_expenses(struct Area area);
-const char *get_region(struct Area area);
+const char *get_region_name(struct Area area);
 double calc_power_output(struct Area area, struct Windmill windmill);
 double calc_wind_shear(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
@@ -134,7 +137,12 @@ int main(void)
 
     int f_index = 0;
     int quit = 0;
-    int region, wind_turbine, priority, input;
+    int region; 
+    int wind_turbine; 
+    int priority;
+    int budget; 
+    int input = 0;
+    int calculate = 0;
     size_t arr_len;
     
 
@@ -144,56 +152,71 @@ int main(void)
 
     while (!quit)
     {
-        char string1[100] = "1. Vælg prioriteter:\n2. Luk program\n";
-        int input = get_input(string1, 1, 2);
+        char string[200] = "1. Region\n2. Vindmølle\n3. Sortering\n4. Budget\n5. Kør program\n6. Luk programmet\n";
+        input = get_input(string, 1, 6);
 
         switch (input)
         {
         case 1:
-            get_priority(&region, &wind_turbine, &priority);
+            region = get_region();
             break;
-        
         case 2:
+            wind_turbine = get_wind_turbine();
+            break;
+        case 3:
+            priority = get_priority();
+            break;
+        case 4:
+            budget = get_budget();
+            break;
+        case 5:
+            calculate = 1;
+            break;
+        case 6:
             quit = 1;
-            break;
-
         default:
             break;
         }
 
-        //Calculate kwh_output and totalexpenses for all the areas
-        for (int i = 0; i < arr_len; i++)
+        if(calculate == 1 && wind_turbine > 0 && region > 0 && budget > 0 && priority > -1 && quit > 0)
         {
-            area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
-            area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
-        }
+            //Calculate kwh_output and total expenses for all the areas
+            for (int i = 0; i < arr_len; i++)
+            {
+                area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
+                area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
+            }
 
-        //Run the sorting of areas given the priority from user
-        switch (priority)
+            //Run the sorting of areas given the priority from user
+            switch (priority)
+            {
+            case 0: // Sort the Areas by expenses low -> high
+                qsort(area, arr_len, sizeof(struct Area), exp_comparator);
+                break;
+            case 1: //Sort the Areas by kWh output high -> low
+                qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
+                break;
+            default:
+                exit(-1);
+                break;
+            }
+
+            // Print the sorted list
+            print_struct_array(area, arr_len, region, &f_index);
+
+            //Print out all the area data of all the areas in given region
+            print_area_data(area[f_index]);
+        }
+        else if(quit != 1)
         {
-        case 0: // Sort the Areas by expenses low -> high
-            qsort(area, arr_len, sizeof(struct Area), exp_comparator);
-            break;
-
-        case 1: //Sort the Areas by kWh output high -> low
-            qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
-            break;
-
-        default:
-            exit(-1);
-            break;
+            printf("Utilstrækkeligt input\n");
+            calculate = 0;
         }
-
-        // Print the sorted list
-        print_struct_array(area, arr_len, region, &f_index);
-
-        //Print out all the area data of all the areas in given region
-        print_area_data(area[f_index]);
-
+        
     }
-    
-    return 0;
     //---------------------------------------------------------------------
+    printf("donzo");
+    return 0;
 }
 
 //Takes image.txt file and prints to terminal (Technically not our own code)
@@ -213,18 +236,32 @@ int clean_stdin()
     return 1;
 }
 
-void get_priority(int *region, int *wind_turbine, int *priority)
+int get_priority()
 {
-    int input = 0;
-    char string1[100] = "Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
-    char string2[100] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
-    char string3[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
+    char string[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
+
+    return (get_input(string, 1, 2));
+}
+
+int get_budget()
+{
+    char string[100] = "Indtast budget: \n";
+
+    return (get_input(string, 1, 2147483647));
+}
+
+int get_region()
+{ 
+    char string[100] = "Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
     
-    *region = get_input(string1, 1, 5) - 1;
+    return (get_input(string, 1, 5)); 
+}
 
-    *wind_turbine = get_input(string2, 1, 2) - 1;
+int get_wind_turbine()
+{
+    char string[100] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
 
-    *priority = get_input(string3, 1, 2) - 1;
+    return (get_input(string, 1, 2));
 }
 
 int get_input(const char *string, int a, int b)
@@ -303,7 +340,7 @@ double calc_roughness_expenses(struct Area area)
 }
 
 //---------------------------------------------------------------------
-const char *get_region(struct Area area)
+const char *get_region_name(struct Area area)
 {
     switch (area.region)
     {
@@ -422,7 +459,7 @@ double calc_wind_shear(struct Area area, struct Windmill windmill)
     else if (area.roughness == 4)
         roughness_length = 1.6;
 
-    //formula for finding exact windspeed at a given height
+    //Formula for finding exact windspeed at a given height
     wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
 
     return (wind_shear);
