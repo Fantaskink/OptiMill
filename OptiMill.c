@@ -151,7 +151,7 @@ int main(void)
 
     while (!quit)
     {
-        char string[200] = "1. Vælg region\n2. Vælg vindmølle\n3. Vælg prioritet\n4. Vælg sortering\n5. Kør program\n 6. Luk programmet\n";
+        char string[200] = "1. Vælg region\n2. Vælg vindmølle\n3. Vælg prioritet\n4. Vælg sortering\n5. Kør program\n6. Luk programmet\n";
         int input = get_input(string, 1, 6);
         int calculate = 0;
 
@@ -272,7 +272,7 @@ void print_area_data(struct Area area)
     printf("------------------------------------------------------\n");
     printf("ID: \t\t\t %d\n", area.id);
     printf("Navn:\t\t\t %s\n", area.name);
-    printf("Region:\t\t\t %s\n", get_region(area));
+    printf("Region:\t\t\t %s\n", get_region_name(area));
     printf("Vindhastighed:\t\t %.2f m/s\n", area.wind_speed);
     printf("På havet:\t\t\t %d\n", area.in_sea);
     printf("Landhøjde:\t\t %.2f m\n", area.land_height);
