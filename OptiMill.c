@@ -42,7 +42,6 @@ struct Area
 
 //Prototypes
 void print_image(FILE *fptr);
-void user_input();
 int clean_stdin();
 void get_priority(int *region, int *wind_turbine, int *priority);
 int get_input(const char *string, int a, int b);
@@ -136,15 +135,6 @@ int main(void)
     print_image(fptr);
     fclose(fptr);
 
-    //Get user input.
-    user_input();
-    
-    return 0;
-    //---------------------------------------------------------------------
-}
-
-void user_input()
-{
     int quit = 0;
     int region, wind_turbine, priority, input;
 
@@ -206,6 +196,9 @@ void user_input()
         print_area_data(area[f_index]);
 
     }
+    
+    return 0;
+    //---------------------------------------------------------------------
 }
 
 //Takes image.txt file and prints to terminal (Technically not our own code)
