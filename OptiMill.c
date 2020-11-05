@@ -3,10 +3,11 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define Hours_in_day 24
-#define hours_in_week 168
-#define hours_in_month 732
-#define hours_in_year 8784
+#define PRICE_PER_KW 0.2
+#define HOURS_IN_DAY 24
+#define HOURS_IN_WEEK 168
+#define HOURS_IN_MONTH 732
+#define HOURS_IN_YEAR 8784
 
 //enumerators
 typedef enum region
@@ -42,11 +43,15 @@ struct Area
     double expenses;          //In Danish Crowns
     double total_expenses;    //Expenses including wind turbine expenses
     double kwh_output;        //kWh output of the specific area with regards to chosen wind turbine
+    double inv_return;        //Return of specific windmill if placed in specific area
 };
 
 //Prototypes
 void print_image(FILE *fptr);
 int clean_stdin();
+const char *get_input_region_name(int a);
+const char *get_manufacturer(int a);
+const char *get_input_priority(int a);
 int get_region();
 int get_wind_turbine();
 int get_priority();
@@ -62,7 +67,7 @@ const char *get_region_name(struct Area area);
 double calc_power_output(struct Area area, struct Windmill windmill);
 double calc_wind_shear(struct Area area, struct Windmill windmill);
 double calc_windmill_income(struct Area area, struct Windmill windmill);
-void calc_windmill_investment(struct Area area, struct Windmill windmill);
+void print_windmill_investment(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
 void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index);
@@ -163,70 +168,49 @@ int main(void)
 
     while (!quit)
     {
-        char string[200] = "1. Region\n2. Vindmølle\n3. Sortering\n4. Budget\n5. Kør program\n6. Luk programmet\n";
-        input = get_input(string, 1, 6);
+        region = get_region() - 1;
+        budget = get_budget();
+        wind_turbine = get_wind_turbine();
+        priority = get_priority();
 
-        switch (input)
+        printf("Dine valg:\n");
+        printf("------------------------------------------------------\n");
+        printf("Region:\t\t\t %s\n", get_input_region_name(region));
+        printf("Budget:\t\t\t %d\n", budget);
+        printf("Producent:\t\t %s\n", get_manufacturer(wind_turbine));
+        printf("Prioritét\t\t %s\n", get_input_priority(priority));
+        printf("------------------------------------------------------\n");
+
+
+        //Calculate kwh_output and total expenses for all the areas
+        for (int i = 0; i < arr_len; i++)
         {
-        case 1:
-            region = get_region();
+            area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
+            area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
+            area[i].inv_return = calc_windmill_income(area[i], windmill[wind_turbine]);
+        }
+
+        //Run the sorting of areas given the priority from user
+        switch (priority)
+        {
+        case 0: // Sort the Areas by expenses low -> high
+            qsort(area, arr_len, sizeof(struct Area), exp_comparator);
             break;
-        case 2:
-            wind_turbine = get_wind_turbine();
+        case 1: //Sort the Areas by kWh output high -> low
+            qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
             break;
-        case 3:
-            priority = get_priority();
-            break;
-        case 4:
-            budget = get_budget();
-            break;
-        case 5:
-            calculate = 1;
-            break;
-        case 6:
-            quit = 1;
         default:
+            exit(-1);
             break;
         }
 
-        if(calculate == 1 && wind_turbine > 0 && region > 0 && budget > 0 && priority > -1 && quit > 0)
-        {
-            //Calculate kwh_output and total expenses for all the areas
-            for (int i = 0; i < arr_len; i++)
-            {
-                area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
-                area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
-            }
+        // Print the sorted list
+        print_struct_array(area, arr_len, region, &f_index);
 
-            //Run the sorting of areas given the priority from user
-            switch (priority)
-            {
-            case 0: // Sort the Areas by expenses low -> high
-                qsort(area, arr_len, sizeof(struct Area), exp_comparator);
-                break;
-            case 1: //Sort the Areas by kWh output high -> low
-                qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
-                break;
-            default:
-                exit(-1);
-                break;
-            }
-
-            // Print the sorted list
-            print_struct_array(area, arr_len, region, &f_index);
-
-            //Print out all the area data of all the areas in given region
-            print_area_data(area[f_index]);
-        }
-        else if(quit != 1)
-        {
-            printf("Utilstrækkeligt input\n");
-            calculate = 0;
-        }
-        
+        //Print out all the area data of all the areas in given region
+        print_area_data(area[f_index]);
     }
     //---------------------------------------------------------------------
-    printf("donzo");
     return 0;
 }
 
@@ -245,6 +229,63 @@ int clean_stdin()
 {
     while (getchar()!='\n');
     return 1;
+}
+
+const char *get_input_region_name(int a)
+{
+    switch (a)
+    {
+    case 0:
+        return("Hovedstaden");
+        break;
+
+    case 1:
+        return("Sydjylland");
+        break;
+    
+    case 2:
+        return("Nordjylland");
+        break;
+
+    case 3:
+        return("Midtjylland");
+        break;
+
+    case 4:
+        return("Sjælland");
+        break;
+    }
+}
+
+const char *get_manufacturer(int a)
+{
+    switch (a)
+    {
+    case 1:
+        return("Vestas");
+        break;
+    
+    case 2:
+        return("Siemens");
+        break;
+    }
+}
+
+const char *get_input_priority(int a)
+{
+    switch (a)
+    {
+    case 1:
+        return("Omkostninger");
+        break;
+    
+    case 2:
+        return("Energiproduktion");
+        break;
+
+    case 3: 
+        return("Årlig afkast");
+    }
 }
 
 int get_priority()
@@ -278,7 +319,7 @@ int get_wind_turbine()
 int get_input(const char *string, int a, int b)
 {
     char c;
-    int input = 0;
+    int input;
     do
     {
         printf("%s", string);
@@ -478,23 +519,24 @@ double calc_wind_shear(struct Area area, struct Windmill windmill)
 
 double calc_windmill_income(struct Area area, struct Windmill windmill)
 {
-     return(calc_power_output(area, windmill) * 0.2);
+    double hourly_income = calc_power_output(area, windmill) * PRICE_PER_KW;
+    return(hourly_income);
 }
 
-void calc_windmill_investment(struct Area area, struct Windmill windmill)
+void print_windmill_investment(struct Area area, struct Windmill windmill)
 {
      double dkk, hours, days, weeks, months, years, percent;
      double income = calc_windmill_income(area, windmill);
      
      hours = windmill.price / income;
-     days = windmill.price / income / Hours_in_day;
-     weeks = windmill.price / income / hours_in_week;
-     months = windmill.price / income / hours_in_month;
-     years = windmill.price / income / hours_in_year;
-     percent = (income * hours_in_year) / windmill.price) * 100;
+     days = windmill.price / income / HOURS_IN_DAY;
+     weeks = windmill.price / income / HOURS_IN_WEEK;
+     months = windmill.price / income / HOURS_IN_MONTH;
+     years = windmill.price / income / HOURS_IN_YEAR;
+     percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
      printf("\nVindmøllen tjener: %lf Kr. i timen\n", dkk);
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
      printf("%lf år, %lf måneder, %lf uger, %lf dage, %lf timer\n", years, months, weeks, days, hours);
-     printf("Altså har investeringen et årligt afkast på: %.2lf \%\n", percent);
+     printf("Altså har investeringen et årligt afkast på: %.2lf %%\n", percent);
 }
