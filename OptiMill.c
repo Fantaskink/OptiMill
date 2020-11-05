@@ -142,7 +142,6 @@ int main(void)
 
     int f_index = 0;
     int quit = 0;
-    int region, wind_turbine, priority, budget, input;
     size_t arr_len;
     
 
@@ -152,9 +151,14 @@ int main(void)
 
     while (!quit)
     {
-        char string[200] = "1. Region\n2. Vindmølle\n3. Sortering\n4. Budget\n5. Kør program\n6. Luk programmet\n";
-        int input = get_input(string, 1, 6);
+        int region = 0; 
+        int wind_turbine = 0; 
+        int priority = 0;
+        int budget = 0; 
+        int input = 0;
         int calculate = 0;
+        char string[200] = "1. Region\n2. Vindmølle\n3. Sortering\n4. Budget\n5. Kør program\n6. Luk programmet\n";
+        input = get_input(string, 1, 6);
 
         switch (input)
         {
@@ -179,7 +183,7 @@ int main(void)
             break;
         }
 
-        if(calculate == 1)
+        if(calculate == 1 && wind_turbine != 0 && region != 0 && priority != 0)
         {
             //Calculate kwh_output and total expenses for all the areas
             for (int i = 0; i < arr_len; i++)
@@ -208,9 +212,12 @@ int main(void)
             //Print out all the area data of all the areas in given region
             print_area_data(area[f_index]);
         }
+        else
+        {
+            printf("Utilstrækkelige inputs");
+        }
+        
     }
-    
-    return 0;
     //---------------------------------------------------------------------
 }
 
