@@ -46,6 +46,7 @@ int clean_stdin();
 int get_region();
 int get_wind_turbine();
 int get_priority();
+int get_budget();
 int get_input(const char *string, int a, int b);
 void print_area_data(struct Area area);
 double calc_total_expenses(struct Area area, struct Windmill windmill);
@@ -141,7 +142,7 @@ int main(void)
 
     int f_index = 0;
     int quit = 0;
-    int region, wind_turbine, priority, input;
+    int region, wind_turbine, priority, budget, input;
     size_t arr_len;
     
 
@@ -164,9 +165,10 @@ int main(void)
             wind_turbine = get_wind_turbine();
             break;
         case 3:
-            priority = get_priority(); 
+            priority = get_priority();
             break;
         case 4:
+            budget = get_budget();
             break;
         case 5:
             calculate = 1;
@@ -179,7 +181,7 @@ int main(void)
 
         if(calculate == 1)
         {
-            //Calculate kwh_output and totalexpenses for all the areas
+            //Calculate kwh_output and total expenses for all the areas
             for (int i = 0; i < arr_len; i++)
             {
                 area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
@@ -234,6 +236,13 @@ int get_priority()
     char string[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
 
     return (get_input(string, 1, 2));
+}
+
+int get_budget()
+{
+    char string[100] = "Indtast budget: \n";
+
+    return (get_input(string, 1, 2147483647));
 }
 
 int get_region()
