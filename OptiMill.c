@@ -180,33 +180,31 @@ int main(void)
         if(calculate == 1)
         {
             //Calculate kwh_output and totalexpenses for all the areas
-        for (int i = 0; i < arr_len; i++)
-        {
-            area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
-            area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
-        }
+            for (int i = 0; i < arr_len; i++)
+            {
+                area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
+                area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
+            }
 
-        //Run the sorting of areas given the priority from user
-        switch (priority)
-        {
-        case 0: // Sort the Areas by expenses low -> high
-            qsort(area, arr_len, sizeof(struct Area), exp_comparator);
-            break;
+            //Run the sorting of areas given the priority from user
+            switch (priority)
+            {
+            case 0: // Sort the Areas by expenses low -> high
+                qsort(area, arr_len, sizeof(struct Area), exp_comparator);
+                break;
+            case 1: //Sort the Areas by kWh output high -> low
+                qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
+                break;
+            default:
+                exit(-1);
+                break;
+            }
 
-        case 1: //Sort the Areas by kWh output high -> low
-            qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
-            break;
+            // Print the sorted list
+            print_struct_array(area, arr_len, region, &f_index);
 
-        default:
-            exit(-1);
-            break;
-        }
-
-        // Print the sorted list
-        print_struct_array(area, arr_len, region, &f_index);
-
-        //Print out all the area data of all the areas in given region
-        print_area_data(area[f_index]);
+            //Print out all the area data of all the areas in given region
+            print_area_data(area[f_index]);
         }
     }
     
