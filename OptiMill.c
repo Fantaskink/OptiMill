@@ -152,7 +152,7 @@ int main(void)
 
     while (!quit)
     {
-        char string[200] = "1. Vælg region\n2. Vælg vindmølle\n3. Vælg prioritet\n4. Vælg sortering\n5. Kør program\n6. Luk programmet\n";
+        char string[200] = "1. Region\n2. Vindmølle\n3. Sortering\n4. Budget\n5. Kør program\n6. Luk programmet\n";
         int input = get_input(string, 1, 6);
         int calculate = 0;
 
