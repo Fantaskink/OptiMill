@@ -135,13 +135,13 @@ int main(void)
     print_image(fptr);
     fclose(fptr);
 
-    int quit = 0;
-    int region, wind_turbine, priority, input;
-
     /* ------------------------- Main code -------------------------------- */
 
     int f_index = 0;
+    int quit = 0;
+    int region, wind_turbine, priority, input;
     size_t arr_len;
+    
 
     //Get the array length of our Area struct
     /* Find ud af hvad sizeof(struct Area) giver*/
