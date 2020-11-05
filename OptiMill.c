@@ -3,6 +3,10 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
+#define Hours_in_day 24
+#define hours_in_week 168
+#define hours_in_month 732
+#define hours_in_year 8784
 
 //enumerators
 typedef enum region
@@ -57,6 +61,8 @@ double calc_roughness_expenses(struct Area area);
 const char *get_region_name(struct Area area);
 double calc_power_output(struct Area area, struct Windmill windmill);
 double calc_wind_shear(struct Area area, struct Windmill windmill);
+double calc_windmill_income(struct Area area, struct Windmill windmill);
+void calc_windmill_investment(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
 void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index);
@@ -468,4 +474,27 @@ double calc_wind_shear(struct Area area, struct Windmill windmill)
     wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
 
     return (wind_shear);
+}
+
+double calc_windmill_income(struct Area area, struct Windmill windmill)
+{
+     return(calc_power_output(area, windmill) * 0.2);
+}
+
+void calc_windmill_investment(struct Area area, struct Windmill windmill)
+{
+     double dkk, hours, days, weeks, months, years, percent;
+     double income = calc_windmill_income(area, windmill);
+     
+     hours = windmill.price / income;
+     days = windmill.price / income / Hours_in_day;
+     weeks = windmill.price / income / hours_in_week;
+     months = windmill.price / income / hours_in_month;
+     years = windmill.price / income / hours_in_year;
+     percent = (income * hours_in_year) / windmill.price) * 100;
+
+     printf("\nVindmøllen tjener: %lf Kr. i timen\n", dkk);
+     printf("Tid indtil vindmøllen har betalt for sig selv:\n");
+     printf("%lf år, %lf måneder, %lf uger, %lf dage, %lf timer\n", years, months, weeks, days, hours);
+     printf("Altså har investeringen et årligt afkast på: %.2lf \%\n", percent);
 }
