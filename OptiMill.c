@@ -142,6 +142,12 @@ int main(void)
 
     int f_index = 0;
     int quit = 0;
+    int region = -1; 
+    int wind_turbine = -1; 
+    int priority = -1;
+    int budget = -1; 
+    int input = 0;
+    int calculate = -1;
     size_t arr_len;
     
 
@@ -151,12 +157,6 @@ int main(void)
 
     while (!quit)
     {
-        int region = -1; 
-        int wind_turbine = -1; 
-        int priority = -1;
-        int budget = -1; 
-        int input = 0;
-        int calculate = -1;
         char string[200] = "1. Region\n2. Vindmølle\n3. Sortering\n4. Budget\n5. Kør program\n6. Luk programmet\n";
         input = get_input(string, 1, 6);
 
@@ -183,7 +183,7 @@ int main(void)
             break;
         }
 
-        if(calculate == 1 && wind_turbine != -1 && region != -1 && priority != -1)
+        if(calculate == 1 && wind_turbine != -1 && region != -1 && priority != -1 && quit != 1)
         {
             //Calculate kwh_output and total expenses for all the areas
             for (int i = 0; i < arr_len; i++)
