@@ -199,6 +199,9 @@ int main(void)
         case 1: //Sort the Areas by kWh output high -> low
             qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
             break;
+        case 2:
+            //qsort(area, arr_len, sizeof(struct Area), comparator);
+            break;
         default:
             exit(-1);
             break;
@@ -292,28 +295,28 @@ int get_priority()
 {
     char string[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
 
-    return (get_input(string, 1, 2));
+    return(get_input(string, 1, 2));
 }
 
 int get_budget()
 {
     char string[100] = "Indtast budget: \n";
 
-    return (get_input(string, 1, 2147483647));
+    return(get_input(string, 1, 2147483647));
 }
 
 int get_region()
 { 
     char string[100] = "Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
     
-    return (get_input(string, 1, 5)); 
+    return(get_input(string, 1, 5)); 
 }
 
 int get_wind_turbine()
 {
     char string[100] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
 
-    return (get_input(string, 1, 2));
+    return(get_input(string, 1, 2));
 }
 
 int get_input(const char *string, int a, int b)
@@ -437,7 +440,7 @@ int kwh_comparator(const void *p, const void *q)
 {
     struct Area *p1 = (struct Area *)p;
     struct Area *p2 = (struct Area *)q;
-    return (int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
+    return(int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
 }
 
 // Prints the sorted struct in the given region and returns the first index in that list  //
@@ -514,7 +517,7 @@ double calc_wind_shear(struct Area area, struct Windmill windmill)
     //Formula for finding exact windspeed at a given height
     wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
 
-    return (wind_shear);
+    return(wind_shear);
 }
 
 double calc_windmill_income(struct Area area, struct Windmill windmill)
@@ -525,7 +528,7 @@ double calc_windmill_income(struct Area area, struct Windmill windmill)
 
 void print_windmill_investment(struct Area area, struct Windmill windmill)
 {
-     double dkk, hours, days, weeks, months, years, percent;
+     double hours, days, weeks, months, years, percent;
      double income = calc_windmill_income(area, windmill);
      
      hours = windmill.price / income;
@@ -535,7 +538,7 @@ void print_windmill_investment(struct Area area, struct Windmill windmill)
      years = windmill.price / income / HOURS_IN_YEAR;
      percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
-     printf("\nVindmøllen tjener: %lf Kr. i timen\n", dkk);
+     printf("\nVindmøllen tjener: %lf Kr. i timen\n", income);
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
      printf("%lf år, %lf måneder, %lf uger, %lf dage, %lf timer\n", years, months, weeks, days, hours);
      printf("Altså har investeringen et årligt afkast på: %.2lf %%\n", percent);
