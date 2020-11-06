@@ -213,6 +213,8 @@ int main(void)
 
         //Print out all the area data of all the areas in given region
         print_area_data(area[f_index]);
+
+        quit = 1;
     }
     //---------------------------------------------------------------------
     return 0;
@@ -349,18 +351,18 @@ int get_input(const char *string, int a, int b)
 void print_area_data(struct Area area)
 {
     printf("------------------------------------------------------\n");
-    printf("ID: \t\t\t %d\n", area.id);
-    printf("Navn:\t\t\t %s\n", area.name);
-    printf("Region:\t\t\t %s\n", get_region_name(area));
-    printf("Vindhastighed:\t\t %.2f m/s\n", area.wind_speed);
-    printf("På havet:\t\t\t %d\n", area.in_sea);
-    printf("Landhøjde:\t\t %.2f m\n", area.land_height);
-    printf("Ruhedsklasse:\t %.2f\n", area.roughness);
-    printf("Afstand til nærmeste hus:\t %.2f km\n", area.dist_to_house);
-    printf("Afstand til el-nettet:\t %.2f km\n", area.dist_to_powergrid);
-    printf("Samlede kwh produktion:\t %.2f kW\n", area.kwh_output);
-    printf("Terrænomkostninger:\t %.2f kr\n", area.expenses);
-    printf("Samlede omkostninger:\t\t %.2f kr\n", area.total_expenses);
+    printf("ID: \t\t\t  %d\n", area.id);
+    printf("Navn:\t\t\t  %s\n", area.name);
+    printf("Region:\t\t\t  %s\n", get_region_name(area));
+    printf("Vindhastighed:\t\t  %.2f m/s\n", area.wind_speed);
+    printf("På havet:\t\t  %d\n", area.in_sea);
+    printf("Landhøjde:\t\t  %.2f m\n", area.land_height);
+    printf("Ruhedsklasse:\t\t  %.2f\n", area.roughness);
+    printf("Afstand til nærmeste hus: %.2f km\n", area.dist_to_house);
+    printf("Afstand til elnettet:\t  %.2f km\n", area.dist_to_powergrid);
+    printf("Samlede kwh produktion:\t  %.2f kW\n", area.kwh_output);
+    printf("Terrænomkostninger:\t  %.2f kr\n", area.expenses);
+    printf("Samlede omkostninger:\t  %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
 
@@ -502,28 +504,28 @@ double calc_wind_shear(struct Area area, struct Windmill windmill)
     if(area.roughness == 0)
         roughness_length = 0.0002;
 
-    else if (area.roughness == 0.5)
+    else if(area.roughness == 0.5)
         roughness_length = 0.0024;
 
-    else if (area.roughness == 1)
+    else if(area.roughness == 1)
         roughness_length = 0.03;
 
-    else if (area.roughness == 1.5)
+    else if(area.roughness == 1.5)
         roughness_length = 0.055;
 
-    else if (area.roughness == 2)
+    else if(area.roughness == 2)
         roughness_length = 0.1;
 
-    else if (area.roughness == 2.5)
+    else if(area.roughness == 2.5)
         roughness_length = 0.2;
 
-    else if (area.roughness == 3)
+    else if(area.roughness == 3)
         roughness_length = 0.4;
 
-    else if (area.roughness == 3.5)
+    else if(area.roughness == 3.5)
         roughness_length = 0.8;
 
-    else if (area.roughness == 4)
+    else if(area.roughness == 4)
         roughness_length = 1.6;
 
     //Formula for finding exact windspeed at a given height
