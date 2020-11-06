@@ -8,6 +8,7 @@
 #define HOURS_IN_WEEK 168
 #define HOURS_IN_MONTH 732
 #define HOURS_IN_YEAR 8784
+#define PRICE_PER_KM 200000
 
 //enumerators
 typedef enum region
@@ -200,7 +201,7 @@ int main(void)
             qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
             break;
         case 2:
-            //qsort(area, arr_len, sizeof(struct Area), comparator);
+            //qsort(area, arr_len, sizeof(struct Area), afkast(ikke lavet endnu)comparator);
             break;
         default:
             exit(-1);
@@ -257,6 +258,10 @@ const char *get_input_region_name(int a)
     case 4:
         return("Sjælland");
         break;
+
+    default:
+        return("Fejl");
+        break;
     }
 }
 
@@ -271,6 +276,8 @@ const char *get_manufacturer(int a)
     case 2:
         return("Siemens");
         break;
+    default:
+        return("Fejl");
     }
 }
 
@@ -288,6 +295,11 @@ const char *get_input_priority(int a)
 
     case 3: 
         return("Årlig afkast");
+        break;
+
+    default:
+        return("Fejl");
+        break;
     }
 }
 
@@ -361,7 +373,7 @@ double calc_total_expenses(struct Area area, struct Windmill windmill)
         area.expenses +
         windmill.price;
 
-    return (total_expense);
+    return(total_expense);
 }
 
 double calc_area_expenses(struct Area area)
@@ -373,25 +385,25 @@ double calc_area_expenses(struct Area area)
         calc_digging_expenses(area) +
         calc_roughness_expenses(area);
 
-    return (area_expense);
+    return(area_expense);
 }
 
 //Not actual calculations
 double calc_terrain_expenses(struct Area area)
 {
-    return (area.in_sea * 1000000);
+    return(area.in_sea * 1000000);
 }
 //Approximation of cable excavation and construction fees
 double calc_digging_expenses(struct Area area)
 {
-    int PRICE_PER_KM = 200000;
-    return (area.dist_to_powergrid * PRICE_PER_KM);
+    
+    return(area.dist_to_powergrid * PRICE_PER_KM);
 }
 
 //Not actual calculations
 double calc_roughness_expenses(struct Area area)
 {
-    return (area.roughness * 10000);
+    return(area.roughness * 10000);
 }
 
 //---------------------------------------------------------------------
@@ -400,27 +412,27 @@ const char *get_region_name(struct Area area)
     switch (area.region)
     {
     case 0:
-        return ("Hovedstaden");
+        return("Hovedstaden");
         break;
 
     case 1:
-        return ("Sydjylland");
+        return("Sydjylland");
         break;
 
     case 2:
-        return ("Nordjylland");
+        return("Nordjylland");
         break;
 
     case 3:
-        return ("Midtjylland");
+        return("Midtjylland");
         break;
 
     case 4:
-        return ("Sjaelland");
+        return("Sjaelland");
         break;
 
     default:
-        return ("Ukendt region");
+        return("Ukendt region");
         break;
     }
 }
