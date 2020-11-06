@@ -278,6 +278,7 @@ const char *get_manufacturer(int a)
     case 2:
         return("Siemens");
         break;
+        
     default:
         return("Fejl");
     }
