@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
+#define AREA_SIZE 6
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
@@ -75,6 +76,47 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
 
 int main(void)
 {
+    int ID, IN_SEA, REGION;                   
+    char NAME[50];                      
+    double  WIND_SPEED, LAND_HEIGHT,
+            ROUGHNESS, DIST_TO_HOUSE,
+            DIST_TO_POWERGRID;                   
+
+
+    //Create Struct Array
+    struct Area area[AREA_SIZE];
+
+    //Read from data file
+
+    FILE* data = fopen("data.txt", "r");
+
+    if (data == NULL)
+    {
+        printf("Kunne ikke indlæse datafilen!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    //Transfer all the data from data file into every field of struct array
+    int i = 0;
+    ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUGHEDSKLASSE, TIL_HUS, TIL_ELNET
+    while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
+                        &ID, &NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
+                        &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
+    {
+    
+        area[i].id = ID;
+        strcpy(area[i].name, NAME);
+        area[i].region = REGION;
+        area[i].wind_speed = WIND_SPEED;
+        area[i].in_sea = IN_SEA;
+        area[i].land_height = LAND_HEIGHT;
+        area[i].roughness = ROUGHNESS;
+        area[i].dist_to_house = DIST_TO_HOUSE;
+        area[i].dist_to_powergrid = DIST_TO_POWERGRID;
+
+        i++;
+    }
+
     struct Windmill windmill[2];
 
     strcpy(windmill[0].name, "Vestas");
@@ -136,7 +178,7 @@ int main(void)
     area[3].dist_to_powergrid = 20;
     area[3].expenses = calc_area_expenses(area[3]);
 
-        strcpy(area[4].name, "Rønne Lufthavn");
+    strcpy(area[4].name, "Rønne Lufthavn");
     area[4].id = 4;
     area[4].wind_speed = 5.5;
     area[4].region = Hovedstaden;
