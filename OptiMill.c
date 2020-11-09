@@ -131,8 +131,7 @@ int main(void)
     windmill[1].wing_span = 130;
     windmill[1].kWh = 4000;
 
-    struct Area area[4];
-
+/*
     strcpy(area[0].name, "Københavns Lufthavn");
     area[0].id = 0;
     area[0].wind_speed = 5.1;
@@ -200,6 +199,7 @@ int main(void)
     area[5].dist_to_powergrid = 2;
     area[5].expenses = calc_area_expenses(area[5]);
 
+*/
     /* ------------------------- Optimill logo printer -------------------------------- */
 
     char *filename = "image.txt";
@@ -379,7 +379,7 @@ int get_priority()
 
 int get_budget()
 {
-    char string[100] = "Indtast budget: \n";
+    char string[100] = "Indtast budget i danske kroner: \n";
 
     return(get_input(string, 1, 2147483647));
 }
