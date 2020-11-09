@@ -15,7 +15,7 @@
 typedef enum region
 {
     Hovedstaden,
-    Sydjylland,
+    Syddanmark,
     Nordjylland,
     Midtjylland,
     Sjaelland
@@ -69,7 +69,7 @@ const char *get_region_name(struct Area area);
 double calc_power_output(struct Area area, struct Windmill windmill);
 double calc_wind_shear(struct Area area, struct Windmill windmill);
 double calc_windmill_income(struct Area area, struct Windmill windmill);
-void print_windmill_investment(struct Area area, struct Windmill windmill);
+void print_windmill_investment_return(struct Area area, struct Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
 void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index);
@@ -131,75 +131,6 @@ int main(void)
     windmill[1].wing_span = 130;
     windmill[1].kWh = 4000;
 
-/*
-    strcpy(area[0].name, "Københavns Lufthavn");
-    area[0].id = 0;
-    area[0].wind_speed = 5.1;
-    area[0].region = Hovedstaden;
-    area[0].in_sea = 0;
-    area[0].land_height = 2;
-    area[0].roughness = 1.5;
-    area[0].dist_to_house = 12;
-    area[0].dist_to_powergrid = 5;
-    area[0].expenses = calc_area_expenses(area[0]);
-
-    strcpy(area[1].name, "Aarhus Lufthavn");
-    area[1].id = 1;
-    area[1].wind_speed = 3.6;
-    area[1].region = Midtjylland;
-    area[1].in_sea = 0;
-    area[1].land_height = 30;
-    area[1].roughness = 1;
-    area[1].dist_to_house = 2;
-    area[1].dist_to_powergrid = 5;
-    area[1].expenses = calc_area_expenses(area[1]);
-
-    //Dummy areas:
-    strcpy(area[2].name, "Billund Lufthavn");
-    area[2].id = 2;
-    area[2].wind_speed = 4.6;
-    area[2].region = Sydjylland;
-    area[2].in_sea = 0;
-    area[2].land_height = 50;
-    area[2].roughness = 2;
-    area[2].dist_to_house = 20;
-    area[2].dist_to_powergrid = 10;
-    area[2].expenses = calc_area_expenses(area[2]);
-
-    strcpy(area[3].name, "Skagen Hovedgade");
-    area[3].id = 3;
-    area[3].wind_speed = 6.0;
-    area[3].region = Nordjylland;
-    area[3].in_sea = 0;
-    area[3].land_height = 5;
-    area[3].roughness = 0.5;
-    area[3].dist_to_house = 30;
-    area[3].dist_to_powergrid = 20;
-    area[3].expenses = calc_area_expenses(area[3]);
-
-    strcpy(area[4].name, "Rønne Lufthavn");
-    area[4].id = 4;
-    area[4].wind_speed = 5.5;
-    area[4].region = Hovedstaden;
-    area[4].in_sea = 0;
-    area[4].land_height = 16;
-    area[4].roughness = 0.5;
-    area[4].dist_to_house = 5;
-    area[4].dist_to_powergrid = 5;
-    area[4].expenses = calc_area_expenses(area[4]);
-
-    strcpy(area[5].name, "Thyborøn Lufthavn");
-    area[5].id = 5;
-    area[5].wind_speed = 4.7;
-    area[5].region = Midtjylland;
-    area[5].in_sea = 0;
-    area[5].land_height = 1;
-    area[5].roughness = 3;
-    area[5].dist_to_house = 0.5;
-    area[5].dist_to_powergrid = 2;
-    area[5].expenses = calc_area_expenses(area[5]);
-
-*/
     /* ------------------------- Optimill logo printer -------------------------------- */
 
     char *filename = "image.txt";
@@ -226,7 +157,6 @@ int main(void)
     int calculate = 0;
     size_t arr_len;
     
-
     //Get the array length of our Area struct
     /* Find ud af hvad sizeof(struct Area) giver*/
     arr_len = sizeof(area) / sizeof(struct Area);
@@ -310,7 +240,7 @@ const char *get_input_region_name(int a)
         break;
 
     case 1:
-        return("Sydjylland");
+        return("Syddanmark");
         break;
     
     case 2:
@@ -386,7 +316,7 @@ int get_budget()
 
 int get_region()
 { 
-    char string[100] = "Vælg region:\n1. Hovedstaden\n2. Sydjylland\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
+    char string[100] = "Vælg region:\n1. Hovedstaden\n2. Syddanmark\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
     
     return(get_input(string, 1, 5)); 
 }
@@ -483,7 +413,7 @@ const char *get_region_name(struct Area area)
         break;
 
     case 1:
-        return("Sydjylland");
+        return("Syddanmark");
         break;
 
     case 2:
@@ -605,7 +535,7 @@ double calc_windmill_income(struct Area area, struct Windmill windmill)
     return(hourly_income);
 }
 
-void print_windmill_investment(struct Area area, struct Windmill windmill)
+void print_windmill_investment_return(struct Area area, struct Windmill windmill)
 {
      double hours, days, weeks, months, years, percent;
      double income = calc_windmill_income(area, windmill);
@@ -617,7 +547,7 @@ void print_windmill_investment(struct Area area, struct Windmill windmill)
      years = windmill.price / income / HOURS_IN_YEAR;
      percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
-     printf("\nVindmøllen tjener: %lf Kr. i timen\n", income);
+     printf("Vindmøllen tjener: %lf Kr. i timen\n", income);
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
      printf("%lf år, %lf måneder, %lf uger, %lf dage, %lf timer\n", years, months, weeks, days, hours);
      printf("Altså har investeringen et årligt afkast på: %.2lf %%\n", percent);
