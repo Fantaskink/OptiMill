@@ -136,6 +136,28 @@ int main(void)
     area[3].dist_to_powergrid = 20;
     area[3].expenses = calc_area_expenses(area[3]);
 
+        strcpy(area[4].name, "Rønne Lufthavn");
+    area[4].id = 4;
+    area[4].wind_speed = 5.5;
+    area[4].region = Hovedstaden;
+    area[4].in_sea = 0;
+    area[4].land_height = 16;
+    area[4].roughness = 0.5;
+    area[4].dist_to_house = 5;
+    area[4].dist_to_powergrid = 5;
+    area[4].expenses = calc_area_expenses(area[4]);
+
+    strcpy(area[5].name, "Thyborøn Lufthavn");
+    area[5].id = 5;
+    area[5].wind_speed = 4.7;
+    area[5].region = Midtjylland;
+    area[5].in_sea = 0;
+    area[5].land_height = 1;
+    area[5].roughness = 3;
+    area[5].dist_to_house = 0.5;
+    area[5].dist_to_powergrid = 2;
+    area[5].expenses = calc_area_expenses(area[5]);
+
     /* ------------------------- Optimill logo printer -------------------------------- */
 
     char *filename = "image.txt";
