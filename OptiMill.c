@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define AREA_SIZE 6
+#define AREA_SIZE 6 // Antal af områder.
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
