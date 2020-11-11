@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define AREA_SIZE 6 // Antal af områder.
+#define AREA_SIZE 6 //Amount of areas
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
@@ -45,7 +45,7 @@ struct Area
     double expenses;          //In Danish Crowns
     double total_expenses;    //Expenses including wind turbine expenses
     double kwh_output;        //kWh output of the specific area with regards to chosen wind turbine
-    double inv_return;        //Return of specific windmill if placed in specific area
+    double inv_return;        //Monetary return of specific windmill if placed in specific area
 };
 
 //Prototypes
@@ -171,7 +171,7 @@ int main(void)
         printf("Dine valg:\n");
         printf("------------------------------------------------------\n");
         printf("Region:\t\t\t %s\n", get_input_region_name(region));
-        printf("Budget:\t\t\t %d\n", budget);
+        printf("Budget:\t\t\t %d kr\n", budget);
         printf("Producent:\t\t %s\n", get_manufacturer(wind_turbine));
         printf("Prioritét\t\t %s\n", get_input_priority(priority));
         printf("------------------------------------------------------\n");
@@ -342,7 +342,7 @@ int get_input(const char *string, int a, int b)
     return(input);
 }
 
-//Print out all the data inside given area
+//Prints all the data inside given area
 void print_area_data(struct Area area)
 {
     printf("------------------------------------------------------\n");
@@ -467,7 +467,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
             count += 1;
             printf("%d \t%s \t %.2f \t\t %.2f\n", array[i].id, array[i].name, array[i].total_expenses, array[i].kwh_output);
             
-            //Insures the first index is only set one time.
+            //Ensures the first index is only set one time.
             if (count == 1)
             {
                 *f_index = i;
