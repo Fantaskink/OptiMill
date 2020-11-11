@@ -198,7 +198,7 @@ int main(void)
             //qsort(area, arr_len, sizeof(struct Area), afkast(ikke lavet endnu)comparator);
             break;
         default:
-            exit(-1);
+            exit(EXIT_FAILURE);
             break;
         }
 
