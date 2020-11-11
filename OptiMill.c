@@ -153,8 +153,6 @@ int main(void)
     int wind_turbine; 
     int priority;
     int budget; 
-    int input = 0;
-    int calculate = 0;
     size_t arr_len;
     
     //Get the array length of our Area struct
