@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define AREA_SIZE 6 //Amount of areas
+#define AREA_SIZE 25 //Amount of areas
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
@@ -22,16 +22,16 @@ typedef enum region
 } region;
 
 //Structs
-struct Windmill
+typedef struct Windmill
 {
     char name[50];            //Name of the windmill
     int price;                //In Danish Crowns
     int height;               //In meters
     int wing_span;            //In meters
     int kWh;                  //Power production of windmill
-};
+} Windmill;
 
-struct Area
+typedef struct Area
 {
     int id;                   //ID of the area
     char name[50];            //Name of the area
@@ -46,7 +46,7 @@ struct Area
     double total_expenses;    //Expenses including wind turbine expenses
     double kwh_output;        //kWh output of the specific area with regards to chosen wind turbine
     double inv_return;        //Monetary return of specific windmill if placed in specific area
-};
+} Area;
 
 //Prototypes
 void print_image(FILE *fptr);
@@ -59,20 +59,20 @@ int get_wind_turbine();
 int get_priority();
 int get_budget();
 int get_input(const char *string, int a, int b);
-void print_area_data(struct Area area);
-double calc_total_expenses(struct Area area, struct Windmill windmill);
-double calc_area_expenses(struct Area area);
-double calc_terrain_expenses(struct Area area);
-double calc_digging_expenses(struct Area area);
-double calc_roughness_expenses(struct Area area);
-const char *get_region_name(struct Area area);
-double calc_power_output(struct Area area, struct Windmill windmill);
-double calc_wind_shear(struct Area area, struct Windmill windmill);
-double calc_windmill_income(struct Area area, struct Windmill windmill);
-void print_windmill_investment_return(struct Area area, struct Windmill windmill);
+void print_area_data(Area area);
+double calc_total_expenses(Area area, Windmill windmill);
+double calc_area_expenses(Area area);
+double calc_terrain_expenses(Area area);
+double calc_digging_expenses(Area area);
+double calc_roughness_expenses(Area area);
+const char *get_region_name(Area area);
+double calc_power_output(Area area, Windmill windmill);
+double calc_wind_shear(Area area, Windmill windmill);
+double calc_windmill_income(Area area, Windmill windmill);
+void print_windmill_investment_return(Area area, Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
-void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index);
+void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
 
 int main(void)
 {
@@ -84,7 +84,7 @@ int main(void)
 
 
     //Create Struct Array
-    struct Area area[AREA_SIZE];
+    Area area[AREA_SIZE];
 
     //Read from data file
 
@@ -117,7 +117,7 @@ int main(void)
         i++;
     }
 
-    struct Windmill windmill[2];
+    Windmill windmill[2];
 
     strcpy(windmill[0].name, "Vestas");
     windmill[0].price = 25202400;
@@ -159,7 +159,7 @@ int main(void)
     
     //Get the array length of our Area struct
     /* Find ud af hvad sizeof(struct Area) giver*/
-    arr_len = sizeof(area) / sizeof(struct Area);
+    arr_len = sizeof(area) / sizeof(Area);
 
     while (!quit)
     {
@@ -189,10 +189,10 @@ int main(void)
         switch (priority)
         {
         case 0: // Sort the Areas by expenses low -> high
-            qsort(area, arr_len, sizeof(struct Area), exp_comparator);
+            qsort(area, arr_len, sizeof(Area), exp_comparator);
             break;
         case 1: //Sort the Areas by kWh output high -> low
-            qsort(area, arr_len, sizeof(struct Area), kwh_comparator);
+            qsort(area, arr_len, sizeof(Area), kwh_comparator);
             break;
         case 2:
             //qsort(area, arr_len, sizeof(struct Area), afkast(ikke lavet endnu)comparator);
@@ -343,7 +343,7 @@ int get_input(const char *string, int a, int b)
 }
 
 //Prints all the data inside given area
-void print_area_data(struct Area area)
+void print_area_data(Area area)
 {
     printf("------------------------------------------------------\n");
     printf("ID: \t\t\t  %d\n", area.id);
@@ -362,7 +362,7 @@ void print_area_data(struct Area area)
 }
 
 //--------------------Expense calculation functions-------------------
-double calc_total_expenses(struct Area area, struct Windmill windmill)
+double calc_total_expenses(Area area, Windmill windmill)
 {
     double total_expense = 0;
 
@@ -373,7 +373,7 @@ double calc_total_expenses(struct Area area, struct Windmill windmill)
     return(total_expense);
 }
 
-double calc_area_expenses(struct Area area)
+double calc_area_expenses(Area area)
 {
     double area_expense = 0;
 
@@ -386,25 +386,25 @@ double calc_area_expenses(struct Area area)
 }
 
 //Not actual calculations
-double calc_terrain_expenses(struct Area area)
+double calc_terrain_expenses(Area area)
 {
     return(area.in_sea * 1000000);
 }
 //Approximation of cable excavation and construction fees
-double calc_digging_expenses(struct Area area)
+double calc_digging_expenses(Area area)
 {
     
     return(area.dist_to_powergrid * PRICE_PER_KM);
 }
 
 //Not actual calculations
-double calc_roughness_expenses(struct Area area)
+double calc_roughness_expenses(Area area)
 {
     return(area.roughness * 10000);
 }
 
 //---------------------------------------------------------------------
-const char *get_region_name(struct Area area)
+const char *get_region_name(Area area)
 {
     switch (area.region)
     {
@@ -439,21 +439,21 @@ const char *get_region_name(struct Area area)
 //Comparator function for sorting areas expenses from high to low
 int exp_comparator(const void *p, const void *q) 
 { 
-    struct Area *p1 = (struct Area *)p;
-    struct Area *p2 = (struct Area *)q;
+    Area *p1 = (Area *)p;
+    Area *p2 = (Area *)q;
     return (int)(100.f*p1->total_expenses - 100.f*p2->total_expenses);
 } 
 
 //Comparator function sorting areas kwh output from high to low
 int kwh_comparator(const void *p, const void *q)
 {
-    struct Area *p1 = (struct Area *)p;
-    struct Area *p2 = (struct Area *)q;
+    Area *p1 = (Area *)p;
+    Area *p2 = (Area *)q;
     return(int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
 }
 
 // Prints the sorted struct in the given region and returns the first index in that list  //
-void print_struct_array(struct Area *array, size_t len, int in_region, int *f_index) 
+void print_struct_array(Area *array, size_t len, int in_region, int *f_index) 
 { 
     int count = 0;
     size_t i;
@@ -478,7 +478,7 @@ void print_struct_array(struct Area *array, size_t len, int in_region, int *f_in
 
 //---------------------------------------------------------------------
 
-double calc_power_output(struct Area area, struct Windmill windmill)
+double calc_power_output(Area area, Windmill windmill)
 {
     double W;
     double wind_turbine_efficiency = 0.35;
@@ -491,7 +491,7 @@ double calc_power_output(struct Area area, struct Windmill windmill)
     return W/1000;
 }
 
-double calc_wind_shear(struct Area area, struct Windmill windmill)
+double calc_wind_shear(Area area, Windmill windmill)
 {
     double wind_shear, roughness_length;
 
@@ -529,13 +529,13 @@ double calc_wind_shear(struct Area area, struct Windmill windmill)
     return(wind_shear);
 }
 
-double calc_windmill_income(struct Area area, struct Windmill windmill)
+double calc_windmill_income(Area area, Windmill windmill)
 {
     double hourly_income = calc_power_output(area, windmill) * PRICE_PER_KW;
     return(hourly_income);
 }
 
-void print_windmill_investment_return(struct Area area, struct Windmill windmill)
+void print_windmill_investment_return(Area area, Windmill windmill)
 {
      double hours, days, weeks, months, years, percent;
      double income = calc_windmill_income(area, windmill);
