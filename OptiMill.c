@@ -11,7 +11,7 @@
 #define HOURS_IN_YEAR 8784
 #define PRICE_PER_KM 200000
 
-//enumerators
+//Enumerators
 typedef enum region
 {
     Hovedstaden,
@@ -103,7 +103,6 @@ int main(void)
                         &ID, &NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
                         &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
     {
-    
         area[i].id = ID;
         strcpy(area[i].name, NAME);
         area[i].region = REGION;
@@ -174,7 +173,6 @@ int main(void)
         printf("Prioritét\t\t %s\n", get_input_priority(priority));
         printf("------------------------------------------------------\n");
 
-
         //Calculate kwh_output and total expenses for all the areas
         for (int i = 0; i < arr_len; i++)
         {
@@ -189,18 +187,21 @@ int main(void)
         case 0: // Sort the Areas by expenses low -> high
             qsort(area, arr_len, sizeof(Area), exp_comparator);
             break;
+
         case 1: //Sort the Areas by kWh output high -> low
             qsort(area, arr_len, sizeof(Area), kwh_comparator);
             break;
+
         case 2:
             //qsort(area, arr_len, sizeof(struct Area), afkast(ikke lavet endnu)comparator);
             break;
+
         default:
             exit(EXIT_FAILURE);
             break;
         }
 
-        // Print the sorted list
+        //Print the sorted list
         print_struct_array(area, arr_len, region, &f_index);
 
         //Print out all the area data of all the areas in given region
@@ -364,9 +365,7 @@ double calc_total_expenses(Area area, Windmill windmill)
 {
     double total_expense = 0;
 
-    total_expense =
-        area.expenses +
-        windmill.price;
+    total_expense = area.expenses + windmill.price;
 
     return(total_expense);
 }
@@ -388,6 +387,7 @@ double calc_terrain_expenses(Area area)
 {
     return(area.in_sea * 1000000);
 }
+
 //Approximation of cable excavation and construction fees
 double calc_digging_expenses(Area area)
 {
