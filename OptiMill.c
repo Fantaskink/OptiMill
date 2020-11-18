@@ -29,6 +29,7 @@ struct Windmill
     int height;               //In meters
     int wing_span;            //In meters
     int kWh;                  //Power production of windmill
+    int lifespan;             //Lifespanm of windmill
 };
 
 struct Area
