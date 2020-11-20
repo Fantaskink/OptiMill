@@ -63,7 +63,7 @@ int get_input(const char *string, int a, int b);
 void print_area_data(Area area);
 double calc_total_expenses(Area area, Windmill windmill);
 double calc_area_expenses(Area area);
-double calc_terrain_expenses(Area area);
+double sea_factor(Area area);
 double calc_digging_expenses(Area area);
 double calc_roughness_expenses(Area area);
 const char *get_region_name(Area area);
@@ -77,11 +77,12 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
 
 int main(void)
 {
+    //Temporary variables for loading structs
     int ID, IN_SEA, REGION;                   
     char NAME[50];                      
     double  WIND_SPEED, LAND_HEIGHT,
             ROUGHNESS, DIST_TO_HOUSE,
-            DIST_TO_POWERGRID;                   
+            DIST_TO_POWERGRID;
 
 
     //Create Struct Array
@@ -101,7 +102,7 @@ int main(void)
     int i = 0;
     ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUGHEDSKLASSE, TIL_HUS, TIL_ELNET
     while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
-                        &ID, &NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
+                        &ID, NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
                         &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
     {
         area[i].id = ID;
@@ -179,6 +180,7 @@ int main(void)
         {
             area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
             area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
+            area[i].expenses = calc_area_expenses(area[i]);
             area[i].inv_return = calc_windmill_income(area[i], windmill[wind_turbine]);
         }
 
@@ -366,7 +368,7 @@ double calc_total_expenses(Area area, Windmill windmill)
 {
     double total_expense = 0;
 
-    total_expense = area.expenses + windmill.price;
+    total_expense = (area.expenses + windmill.price);
 
     return(total_expense);
 }
@@ -376,17 +378,24 @@ double calc_area_expenses(Area area)
     double area_expense = 0;
 
     area_expense =
-        calc_terrain_expenses(area) +
         calc_digging_expenses(area) +
-        calc_roughness_expenses(area);
+        calc_roughness_expenses(area) *
+        sea_factor(area);
 
     return(area_expense);
 }
 
 //Not actual calculations
-double calc_terrain_expenses(Area area)
+double sea_factor(Area area)
 {
-    return(area.in_sea * 1000000);
+    if(area.in_sea > 0)
+    {
+        return(2.6);
+    }
+    else
+    {
+        return(1);
+    }
 }
 
 //Approximation of cable excavation and construction fees
