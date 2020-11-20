@@ -385,7 +385,7 @@ double calc_area_expenses(Area area)
     return(area_expense);
 }
 
-//Not actual calculations
+//Approximation of wind turbine cost when constructed on the sea
 double sea_factor(Area area)
 {
     if(area.in_sea > 0)
