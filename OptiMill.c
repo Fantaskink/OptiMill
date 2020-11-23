@@ -176,12 +176,12 @@ int main(void)
         printf("------------------------------------------------------\n");
 
         //Calculate kwh_output and total expenses for all the areas
-        for (int i = 0; i < arr_len; i++)
+        for (int j = 0; j < arr_len; j++)
         {
-            area[i].kwh_output = calc_power_output(area[i], windmill[wind_turbine]);
-            area[i].total_expenses = calc_total_expenses(area[i], windmill[wind_turbine]);
-            area[i].expenses = calc_area_expenses(area[i]);
-            area[i].inv_return = calc_windmill_income(area[i], windmill[wind_turbine]);
+            area[j].kwh_output = calc_power_output(area[j], windmill[wind_turbine]);
+            area[j].total_expenses = calc_total_expenses(area[j], windmill[wind_turbine]);
+            area[j].expenses = calc_area_expenses(area[j]);
+            area[j].inv_return = calc_windmill_income(area[j], windmill[wind_turbine]);
         }
 
         //Run the sorting of areas given the priority from user
@@ -201,7 +201,6 @@ int main(void)
 
         default:
             exit(EXIT_FAILURE);
-            break;
         }
 
         //Print the sorted list
@@ -239,27 +238,21 @@ const char *get_input_region_name(int a)
     {
     case 0:
         return("Hovedstaden");
-        break;
 
     case 1:
         return("Syddanmark");
-        break;
     
     case 2:
         return("Nordjylland");
-        break;
 
     case 3:
         return("Midtjylland");
-        break;
 
     case 4:
         return("Sjælland");
-        break;
 
     default:
         return("Fejl");
-        break;
     }
 }
 
@@ -269,11 +262,9 @@ const char *get_manufacturer(int a)
     {
     case 0:
         return("Vestas");
-        break;
     
     case 1:
         return("Siemens");
-        break;
         
     default:
         return("Fejl");
@@ -286,19 +277,15 @@ const char *get_input_priority(int a)
     {
     case 1:
         return("Omkostninger");
-        break;
     
     case 2:
         return("Energiproduktion");
-        break;
 
     case 3: 
         return("Årlig afkast");
-        break;
 
     default:
         return("Fejl");
-        break;
     }
 }
 
@@ -366,7 +353,7 @@ void print_area_data(Area area)
 //--------------------Expense calculation functions-------------------
 double calc_total_expenses(Area area, Windmill windmill)
 {
-    double total_expense = 0;
+    double total_expense;
 
     total_expense = (area.expenses + windmill.price);
 
@@ -375,7 +362,7 @@ double calc_total_expenses(Area area, Windmill windmill)
 
 double calc_area_expenses(Area area)
 {
-    double area_expense = 0;
+    double area_expense;
 
     area_expense =
         calc_digging_expenses(area) +
@@ -418,27 +405,21 @@ const char *get_region_name(Area area)
     {
     case 0:
         return("Hovedstaden");
-        break;
 
     case 1:
         return("Syddanmark");
-        break;
 
     case 2:
         return("Nordjylland");
-        break;
 
     case 3:
         return("Midtjylland");
-        break;
 
     case 4:
         return("Sjaelland");
-        break;
 
     default:
         return("Ukendt region");
-        break;
     }
 }
 
@@ -501,7 +482,7 @@ double calc_power_output(Area area, Windmill windmill)
 
 double calc_wind_shear(Area area, Windmill windmill)
 {
-    double wind_shear, roughness_length;
+    double wind_shear, roughness_length = 0;
 
     //Converts roughness of the given area into roughness length
     if(area.roughness == 0)
