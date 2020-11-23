@@ -29,7 +29,7 @@ typedef struct Windmill
     int height;               //In meters
     int wing_span;            //In meters
     int kWh;                  //Power production of windmill
-    int lifespan;             //Lifespanm of windmill
+    int lifespan;             //Lifespan of windmill
 } Windmill;
 
 typedef struct Area
@@ -157,7 +157,7 @@ int main(void)
     size_t arr_len;
     
     //Get the array length of our Area struct
-    /* Find ud af hvad sizeof(struct Area) giver*/
+    /* Find ud af hvad sizeof(Area) giver*/
     arr_len = sizeof(area) / sizeof(Area);
 
     while (!quit)
@@ -196,7 +196,7 @@ int main(void)
             break;
 
         case 2:
-            //qsort(area, arr_len, sizeof(struct Area), afkast(ikke lavet endnu)comparator);
+            //qsort(area, arr_len, sizeof(Area), afkast(ikke lavet endnu)comparator);
             break;
 
         default:
@@ -304,28 +304,28 @@ const char *get_input_priority(int a)
 
 int get_priority()
 {
-    char string[100] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
+    char string[] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
 
     return(get_input(string, 1, 2));
 }
 
 int get_budget()
 {
-    char string[100] = "Indtast budget i danske kroner: \n";
+    char string[] = "Indtast budget i danske kroner: \n";
 
     return(get_input(string, 1, 2147483647));
 }
 
 int get_region()
 { 
-    char string[100] = "Vælg region:\n1. Hovedstaden\n2. Syddanmark\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
+    char string[] = "Vælg region:\n1. Hovedstaden\n2. Syddanmark\n3. Nordjylland\n4. Midtjylland\n5. Sjælland\n";
     
     return(get_input(string, 1, 5)); 
 }
 
 int get_wind_turbine()
 {
-    char string[100] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
+    char string[] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
 
     return(get_input(string, 1, 2));
 }
@@ -401,7 +401,6 @@ double sea_factor(Area area)
 //Approximation of cable excavation and construction fees
 double calc_digging_expenses(Area area)
 {
-    
     return(area.dist_to_powergrid * PRICE_PER_KM);
 }
 
