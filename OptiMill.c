@@ -227,7 +227,7 @@ int main(void)
         //Print out all the area data of all the areas in given region
         //print_area_data(area[f_index]);
 
-        print_windmill_model(windmill[f_index]);
+        print_windmill_model(windmill[wind_turbine]);
 
         quit = 1;
     }
