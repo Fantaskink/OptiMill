@@ -74,6 +74,7 @@ void print_windmill_investment_return(Area area, Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
 void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
+void print_area_summary(Area area, Windmill windmill);
 
 int main(void)
 {
@@ -203,10 +204,12 @@ int main(void)
         }
 
         //Print the sorted list
-        print_struct_array(area, arr_len, region, &f_index);
+        //print_struct_array(area, arr_len, region, &f_index);
+
+        print_area_summary(area[f_index], windmill[wind_turbine]);
 
         //Print out all the area data of all the areas in given region
-        print_area_data(area[f_index]);
+        //print_area_data(area[f_index]);
 
         quit = 1;
     }
@@ -366,6 +369,13 @@ void print_area_data(Area area)
     printf("------------------------------------------------------\n");
 }
 
+void print_area_summary(Area area, Windmill windmill)
+{
+    printf("Bedste valg:\n");
+    printf("Navn: \t Omkostninger: \t Afkast: \t Energiproduktion:\n");
+    printf("%s  %.2f kr \t %.2f kr\t %.2f kw\n", area.name, area.expenses, calc_windmill_income(area, windmill), area.kwh_output);
+}
+
 //--------------------Expense calculation functions-------------------
 double calc_total_expenses(Area area, Windmill windmill)
 {
@@ -499,8 +509,8 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index)
 double calc_power_output(Area area, Windmill windmill)
 {
     double W;
-    double wind_turbine_efficiency = 0.35;
-    double air_dens = 1.2;
+    double wind_turbine_efficiency = 0.39;
+    double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
     W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
@@ -569,8 +579,34 @@ void print_windmill_investment_return(Area area, Windmill windmill)
      years = windmill.price / income / HOURS_IN_YEAR;
      percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
-     printf("Vindmøllen tjener: %lf Kr. i timen\n", income);
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
-     printf("%lf år, %lf måneder, %lf uger, %lf dage, %lf timer\n", years, months, weeks, days, hours);
-     printf("Altså har investeringen et årligt afkast på: %.2lf %%\n", percent);
+     printf("Det tager ");
+
+     if (years > 0)
+     {
+         printf("%lf år, ", years);
+     }
+
+     if (hours > 0)
+     {
+         printf("%lf måneder, ", months);
+     }
+
+     if (weeks > 0)
+     {
+         printf("%lf uger, ", weeks);
+     }
+
+     if (days > 0)
+     {
+         printf("%lf dage, ", days);
+     } 
+     
+     if (hours > 0)
+     {
+         printf("%lf timer.", hours);
+     }
+    
+     printf("Dette svare til at vindmøllen tjener: %lf Kr. i timen\n", income);
+     printf("Investeringen et årligt afkast på: %.2lf %%\n", percent);
 }
