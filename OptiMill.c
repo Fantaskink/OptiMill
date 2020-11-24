@@ -74,6 +74,7 @@ void print_windmill_investment_return(Area area, Windmill windmill);
 int exp_comparator(const void *p, const void *q);
 int kwh_comparator(const void *p, const void *q);
 void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
+void print_area_summary(Area area, Windmill windmill);
 
 int main(void)
 {
@@ -204,10 +205,12 @@ int main(void)
         }
 
         //Print the sorted list
-        print_struct_array(area, arr_len, region, &f_index);
+        //print_struct_array(area, arr_len, region, &f_index);
+
+        print_area_summary(area[f_index], windmill[wind_turbine]);
 
         //Print out all the area data of all the areas in given region
-        print_area_data(area[f_index]);
+        //print_area_data(area[f_index]);
 
         quit = 1;
     }
@@ -348,6 +351,13 @@ void print_area_data(Area area)
     printf("Terrænomkostninger:\t  %.2f kr\n", area.expenses);
     printf("Samlede omkostninger:\t  %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
+}
+
+void print_area_summary(Area area, Windmill windmill)
+{
+    printf("Bedste valg:\n");
+    printf("Navn: \t Omkostninger: \t Afkast: \t Energiproduktion:\n");
+    printf("%s  %.2f kr \t %.2f kr\t %.2f kw\n", area.name, area.expenses, calc_windmill_income(area, windmill), area.kwh_output);
 }
 
 //--------------------Expense calculation functions-------------------
