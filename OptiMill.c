@@ -447,17 +447,17 @@ const char *get_region_name(Area area)
 //Comparator function for sorting areas expenses from high to low
 int exp_comparator(const void *p, const void *q) 
 { 
-    Area *p1 = (Area *)p;
-    Area *p2 = (Area *)q;
-    return (int)(100.f*p1->total_expenses - 100.f*p2->total_expenses);
+    Area *area1 = (Area *)p;
+    Area *area2 = (Area *)q;
+    return (int)(area1->total_expenses - area2->total_expenses);
 } 
 
 //Comparator function sorting areas kwh output from high to low
 int kwh_comparator(const void *p, const void *q)
 {
-    Area *p1 = (Area *)p;
-    Area *p2 = (Area *)q;
-    return(int)(100.f*p2->kwh_output - 100.f*p1->kwh_output);
+    Area *area1 = (Area *)p;
+    Area *area2 = (Area *)q;
+    return(int)(area2->kwh_output - area1->kwh_output);
 }
 
 // Prints the sorted struct in the given region and returns the first index in that list  //
