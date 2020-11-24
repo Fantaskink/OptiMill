@@ -480,8 +480,8 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index)
 double calc_power_output(Area area, Windmill windmill)
 {
     double W;
-    double wind_turbine_efficiency = 0.35;
-    double air_dens = 1.2;
+    double wind_turbine_efficiency = 0.39;
+    double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
     W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
@@ -546,8 +546,34 @@ void print_windmill_investment_return(Area area, Windmill windmill)
      years = windmill.price / income / HOURS_IN_YEAR;
      percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
-     printf("Vindmøllen tjener: %lf Kr. i timen\n", income);
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
-     printf("%lf år, %lf måneder, %lf uger, %lf dage, %lf timer\n", years, months, weeks, days, hours);
-     printf("Altså har investeringen et årligt afkast på: %.2lf %%\n", percent);
+     printf("Det tager ");
+
+     if (years > 0)
+     {
+         printf("%lf år, ", years);
+     }
+
+     if (hours > 0)
+     {
+         printf("%lf måneder, ", months);
+     }
+
+     if (weeks > 0)
+     {
+         printf("%lf uger, ", weeks);
+     }
+
+     if (days > 0)
+     {
+         printf("%lf dage, ", days);
+     } 
+     
+     if (hours > 0)
+     {
+         printf("%lf timer.", hours);
+     }
+    
+     printf("Dette svare til at vindmøllen tjener: %lf Kr. i timen\n", income);
+     printf("Investeringen et årligt afkast på: %.2lf %%\n", percent);
 }
