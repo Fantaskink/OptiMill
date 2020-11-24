@@ -157,7 +157,6 @@ int main(void)
     size_t arr_len;
     
     //Get the array length of our Area struct
-    /* Find ud af hvad sizeof(Area) giver*/
     arr_len = sizeof(area) / sizeof(Area);
 
     while (!quit)
@@ -179,23 +178,23 @@ int main(void)
         for (int j = 0; j < arr_len; j++)
         {
             area[j].kwh_output = calc_power_output(area[j], windmill[wind_turbine]);
-            area[j].total_expenses = calc_total_expenses(area[j], windmill[wind_turbine]);
             area[j].expenses = calc_area_expenses(area[j]);
+            area[j].total_expenses = calc_total_expenses(area[j], windmill[wind_turbine]);
             area[j].inv_return = calc_windmill_income(area[j], windmill[wind_turbine]);
         }
 
         //Run the sorting of areas given the priority from user
         switch (priority)
         {
-        case 0: // Sort the Areas by expenses low -> high
+        case 1: // Sort the Areas by expenses low -> high
             qsort(area, arr_len, sizeof(Area), exp_comparator);
             break;
 
-        case 1: //Sort the Areas by kWh output high -> low
+        case 2: //Sort the Areas by kWh output high -> low
             qsort(area, arr_len, sizeof(Area), kwh_comparator);
             break;
 
-        case 2:
+        case 3:
             //qsort(area, arr_len, sizeof(Area), afkast(ikke lavet endnu)comparator);
             break;
 
@@ -234,59 +233,76 @@ int clean_stdin()
 
 const char *get_input_region_name(int a)
 {
+    char *result;
     switch (a)
     {
     case 0:
-        return("Hovedstaden");
+        result = "Hovedstaden";
+        break;
 
     case 1:
-        return("Syddanmark");
-    
+        result = "Syddanmark";
+        break;
     case 2:
-        return("Nordjylland");
-
+        result = "Nordjylland";
+        break;
     case 3:
-        return("Midtjylland");
-
+        result = "Midtjylland";
+        break;
     case 4:
-        return("Sjælland");
-
+        result = "Sjælland";
+        break;
     default:
-        return("Fejl");
+        result = "Fejl";
+        break;
     }
+
+    return result;
 }
 
 const char *get_manufacturer(int a)
 {
+    char *result;
     switch (a)
     {
     case 0:
-        return("Vestas");
-    
+        result = "Vestas";
+        break;
     case 1:
-        return("Siemens");
-        
+        result = "Siemens";
+        break;
     default:
-        return("Fejl");
+        result = "Fejl";
+        break;
     }
+
+    return result;
 }
 
 const char *get_input_priority(int a)
 {
+    char *result;
+
     switch (a)
     {
     case 1:
-        return("Omkostninger");
+        result = "Omkostninger";
+        break;
     
     case 2:
-        return("Energiproduktion");
+        result = "Energiproduktion";
+        break;
 
     case 3: 
-        return("Årlig afkast");
+        result = "Årlig afkast";
+        break;
 
     default:
-        return("Fejl");
+        result = "Fejl";
+        break;
     }
+
+    return result;
 }
 
 int get_priority()
@@ -375,14 +391,18 @@ double calc_area_expenses(Area area)
 //Approximation of wind turbine cost when constructed on the sea
 double sea_factor(Area area)
 {
+    double factor;
+
     if(area.in_sea > 0)
     {
-        return(2.6);
+        factor = 2.6;
     }
     else
     {
-        return(1);
+        factor = 1;
     }
+
+    return factor;
 }
 
 //Approximation of cable excavation and construction fees
@@ -400,26 +420,36 @@ double calc_roughness_expenses(Area area)
 //---------------------------------------------------------------------
 const char *get_region_name(Area area)
 {
+    char *result;
+
     switch (area.region)
     {
     case 0:
-        return("Hovedstaden");
+        result = "Hovedstaden";
+        break;
 
     case 1:
-        return("Syddanmark");
+        result = "Syddanmark";
+        break;
 
     case 2:
-        return("Nordjylland");
+        result = "Nordjylland";
+        break;
 
     case 3:
-        return("Midtjylland");
+        result = "Midtjylland";
+        break;
 
     case 4:
-        return("Sjaelland");
+        result = "Sjaelland";
+        break;
 
     default:
-        return("Ukendt region");
+        result = "Ukendt region";
+        break;
     }
+
+    return result;
 }
 
 //--------------------Sorting algorithm functions-------------------
@@ -449,14 +479,13 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index)
     printf("ID: \t Navn: \t\t Samlede omkostninger (kr): \t Energiproduktion (kW) \n");
     for(i=0; i<len; i++)
     {
-        //Printer de områder ud der har samme region som den indtastede region
         if ((int) array[i].region == in_region)
         {
             count += 1;
             printf("%d \t%s \t %.2f \t\t %.2f\n", array[i].id, array[i].name, array[i].total_expenses, array[i].kwh_output);
             
-            //Ensures the first index is only set one time.
-            if (count == 1)
+            
+            if (count == 1) //First index is only set one time.
             {
                 *f_index = i;
             }
@@ -466,6 +495,7 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index)
 
 //---------------------------------------------------------------------
 
+//Returns kW output from windmill calculated with given areas windspeed
 double calc_power_output(Area area, Windmill windmill)
 {
     double W;
@@ -475,10 +505,11 @@ double calc_power_output(Area area, Windmill windmill)
     double r = windmill.wing_span / 2;
     W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
     
-    //Returns result in kW
+    
     return W/1000;
 }
 
+//Returns the wind speed in windmills height 
 double calc_wind_shear(Area area, Windmill windmill)
 {
     double wind_shear, roughness_length = 0;
@@ -512,17 +543,20 @@ double calc_wind_shear(Area area, Windmill windmill)
         roughness_length = 1.6;
 
     //Formula for finding exact windspeed at a given height
+    /* v = v_ref * ln(z/z_0) / ln(z_ref/z_0)   */
     wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
 
     return(wind_shear);
 }
 
+//Return the hourly yield from windmill in DKK
 double calc_windmill_income(Area area, Windmill windmill)
 {
     double hourly_income = calc_power_output(area, windmill) * PRICE_PER_KW;
     return(hourly_income);
 }
 
+//Prints the yearly yield from windmill in DKK
 void print_windmill_investment_return(Area area, Windmill windmill)
 {
      double hours, days, weeks, months, years, percent;
