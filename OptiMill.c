@@ -4,6 +4,7 @@
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
 #define AREA_SIZE 25 //Amount of areas
+#define WINDMILL_MODELS 2 //Amount of implimented windmill models
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
@@ -24,6 +25,7 @@ typedef enum region
 //Structs
 typedef struct Windmill
 {
+	int id;					  //ID of windmill model
     char name[50];            //Name of the windmill
     int price;                //In Danish Crowns
     int height;               //In meters
@@ -62,6 +64,7 @@ int get_priority();
 int get_budget();
 int get_input(const char *string, int a, int b);
 void print_area_data(Area area);
+void print_windmill_model(Windmill windmill);
 double calc_total_expenses(Area area, Windmill windmill);
 double calc_area_expenses(Area area);
 double sea_factor(Area area);
@@ -80,19 +83,25 @@ void print_area_summary(Area area, Windmill windmill);
 int main(void)
 {
     //Temporary variables for loading structs
-    int ID, IN_SEA, REGION;                   
+    int ID, IN_SEA, REGION;
+    int PRICE, HEIGHT, WING_SPAN, KWH;
     char NAME[50];                      
     double  WIND_SPEED, LAND_HEIGHT,
             ROUGHNESS, DIST_TO_HOUSE,
             DIST_TO_POWERGRID;
 
 
+
     //Create Struct Array
     Area area[AREA_SIZE];
+
+    Windmill windmill[WINDMILL_MODELS];
 
     //Read from data file
 
     FILE* data = fopen("data.txt", "r");
+
+    FILE* model = fopen("model.txt", "r");
 
     if (data == NULL)
     {
@@ -100,7 +109,13 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    //Transfer all the data from data file into every field of struct array
+    if (model == NULL)
+    {
+    	printf("Kunne ikke indlæse vindmøllemodel filen");
+    	exit(EXIT_FAILURE);
+    }
+
+    //Transfer all the data from data file into every field of area struct array
     int i = 0;
     ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUGHEDSKLASSE, TIL_HUS, TIL_ELNET
     while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
@@ -120,19 +135,20 @@ int main(void)
         i++;
     }
 
-    Windmill windmill[2];
+    //Transfer all the information from model file into every field of the windmill struct array
+    i = 0;
+	while (fscanf(model, "%d %s %d %d %d %d",
+				  &ID, NAME, &PRICE, &HEIGHT, &WING_SPAN, &KWH) > 0)
+	{
+		windmill[i].id = ID;
+		strcpy(windmill[i].name, NAME);
+		windmill[i].price = PRICE;
+		windmill[i].height = HEIGHT;
+		windmill[i].wing_span = WING_SPAN;
+		windmill[i].kW_max = KWH;
 
-    strcpy(windmill[0].name, "Vestas");
-    windmill[0].price = 25202400;
-    windmill[0].height = 200;
-    windmill[0].wing_span = 162;
-    windmill[0].kW_max = 6000;
-
-    strcpy(windmill[1].name, "Siemens");
-    windmill[1].price = 18894090;
-    windmill[1].height = 155;
-    windmill[1].wing_span = 130;
-    windmill[1].kW_max = 4000;
+		i++;
+	}
 
     /* ------------------------- Optimill logo printer -------------------------------- */
 
@@ -211,6 +227,8 @@ int main(void)
 
         //Print out all the area data of all the areas in given region
         //print_area_data(area[f_index]);
+
+        print_windmill_model(windmill[wind_turbine]);
 
         quit = 1;
     }
@@ -368,6 +386,17 @@ void print_area_data(Area area)
     printf("Terrænomkostninger:\t  %.2f kr\n", area.expenses);
     printf("Samlede omkostninger:\t  %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
+}
+//Prints all the information for the chosen windmill model
+void print_windmill_model(Windmill windmill){
+	printf("------------------------------------------------------\n");
+	printf("ID: \t\t\t  %d\n", windmill.id);
+	printf("Navn:\t\t\t  %s\n", windmill.name);
+	printf("Pris:\t\t\t  %d kr.\n", windmill.price);
+	printf("Højde:\t\t\t  %d m\n", windmill.height);
+	printf("Vingefang:\t\t  %d m\n", windmill.wing_span);
+	printf("El produktion:\t\t  %d kWh\n", windmill.kW);
+	printf("------------------------------------------------------\n");
 }
 
 void print_area_summary(Area area, Windmill windmill)
