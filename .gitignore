@@ -47,4 +47,16 @@ cmake-build-debug/CMakeFiles/3.17.3/CMakeSystem.cmake
 .idea/vcs.xml
 .idea/OptiMill.iml
 .idea/modules.xml
+<<<<<<< HEAD
 a.exe
+=======
+.idea/misc.xml
+cmake-build-debug/model.txt
+cmake-build-debug/image.txt
+cmake-build-debug/data.txt
+cmake-build-debug/CMakeFiles/OptiMill.dir/OptiMill.o
+.\build/CMakeFiles/clion-log.txt
+.\build/CMakeFiles/clion-environment.txt
+.\build/CMakeFiles/clion-log.txt
+.\build/CMakeFiles/clion-environment.txt
+>>>>>>> 412ab9d8bb6f150fd52dce4e715df9de075958ff

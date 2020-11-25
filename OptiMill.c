@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define AREA_SIZE 24 //Amount of areas
+#define AREA_SIZE 25 //Amount of areas
 #define WINDMILL_MODELS 2 //Amount of implimented windmill models
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
@@ -32,7 +32,7 @@ typedef struct Windmill
     int wing_span;            //In meters
     int kW;                   //Actual power production
     int kW_max;               //Maximum power production
-    int lifespan;             //Lifespan of windmill
+    //int lifespan;             //Lifespan of windmill
 } Windmill;
 
 typedef struct Area
@@ -53,7 +53,6 @@ typedef struct Area
 } Area;
 
 //Prototypes
-void print_image(FILE *fptr);
 int clean_stdin();
 const char *get_input_region_name(int a);
 const char *get_manufacturer(int a);
@@ -64,23 +63,29 @@ int get_priority();
 int get_budget();
 int get_user_continue();
 int get_input(const char *string, int a, int b);
-void print_area_data(Area area);
-void print_windmill_model(Windmill windmill);
-double calc_total_expenses(Area area, Windmill windmill);
-double calc_area_expenses(Area area);
-double sea_factor(Area area);
-double calc_digging_expenses(Area area);
-double calc_roughness_expenses(Area area);
 const char *get_region_name(Area area);
+
+double calc_total_expenses(Area area, Windmill windmill);
+double calc_area_expenses(Area area, Windmill windmill);
+double calc_digging_expenses(Area area);
+double calc_foundation_expenses(Area area, Windmill windmill);
+double sea_factor(Area area);
+
 double calc_power_output(Area area, Windmill windmill);
 double calc_wind_shear(Area area, Windmill windmill);
 double calc_windmill_income(Area area, Windmill windmill);
-void print_windmill_investment_return(Area area, Windmill windmill);
+
 int exp_comparator(const void *p, const void *q);
 int kW_comparator(const void *p, const void *q);
 int invest_comparator(const void *p, const void *q);
-void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
+
+void print_area_data(Area area);
+void print_windmill_model(Windmill windmill);
+void print_area_array(Area area[]);
+int find_best_area_index(Area area[], int in_region, int in_budget);
+void print_windmill_investment_return(Area area, Windmill windmill);
 void print_area_summary(Area area, Windmill windmill);
+void print_image(FILE *fptr);
 
 int main(void)
 {
@@ -166,7 +171,6 @@ int main(void)
 
     /* ------------------------- Main code -------------------------------- */
 
-    int f_index = 0;
     int quit = 1;
     int region; 
     int wind_turbine; 
@@ -196,7 +200,7 @@ int main(void)
         for (int j = 0; j < arr_len; j++)
         {
             area[j].kW_output = calc_power_output(area[j], windmill[wind_turbine]);
-            area[j].expenses = calc_area_expenses(area[j]);
+            area[j].expenses = calc_area_expenses(area[j], windmill[wind_turbine]);
             area[j].total_expenses = calc_total_expenses(area[j], windmill[wind_turbine]);
             area[j].inv_return = calc_windmill_income(area[j], windmill[wind_turbine]);
         }
@@ -219,16 +223,18 @@ int main(void)
         default:
             exit(EXIT_FAILURE);
         }
+        //Find the best result for given sorting
+        int best_index = find_best_area_index(area, region, budget);
 
         //Print the sorted list
-        print_struct_array(area, arr_len, region, &f_index);
+        print_area_array(area);
 
-        print_area_summary(area[f_index], windmill[wind_turbine]);
+            //print_area_summary(area[best_index], windmill[wind_turbine]);
 
-        //Print out all the area data of all the areas in given region
-        print_area_data(area[f_index]);
+        //Print out all the area data of best result
+        print_area_data(area[best_index]);
 
-        //print_windmill_model(windmill[wind_turbine]);
+            //print_windmill_model(windmill[wind_turbine]);
 
         quit = get_user_continue(); //returns 0 or 1
         //quit = 1;
@@ -337,9 +343,9 @@ int get_priority()
 
 int get_budget()
 {
-    char string[] = "Indtast budget i danske kroner: \n";
+	char string[] = "Vælg budget:\n1. 18,000,000-24,000,000 kr.\n2. 24,000,000-30,000,000 kr.\n3. 30,000,000-50,000,000 kr.\n";
 
-    return(get_input(string, 1, 2147483647));
+	return (get_input(string, 1, 3));
 }
 
 int get_region()
@@ -414,7 +420,19 @@ void print_area_summary(Area area, Windmill windmill)
     printf("%s  %.2f kr \t %.2f kr\t %.2f kw\n", area.name, area.expenses, calc_windmill_income(area, windmill), area.kW_output);
 }
 
+// Prints the entire area array - FOR DEBUGGING  //
+void print_area_array(Area area[]) 
+{ 
+ 
+    printf("ID: \t Navn: \t\t Samlede omkostninger (kr): \t Energiproduktion (kW) \n");
+    for(int i=0; i<AREA_SIZE; i++)
+    {
+        printf("%d \t%s \t %.2f \t\t %.2f\n", area[i].id, area[i].name, area[i].total_expenses, area[i].kW_output);
+    }
+}
+
 //--------------------Expense calculation functions-------------------
+//Total expenses for a whole windmill project.
 double calc_total_expenses(Area area, Windmill windmill)
 {
     double total_expense;
@@ -424,16 +442,44 @@ double calc_total_expenses(Area area, Windmill windmill)
     return(total_expense);
 }
 
-double calc_area_expenses(Area area)
+//Expense for placing a windmill in given area
+double calc_area_expenses(Area area, Windmill windmill)
 {
+    int transport_expense = 100000;
+
     double area_expense;
 
     area_expense =
-        calc_digging_expenses(area) +
-        calc_roughness_expenses(area) *
-        sea_factor(area);
+        (calc_digging_expenses(area) +
+        calc_foundation_expenses(area, windmill) +
+        transport_expense) * sea_factor(area);
+        
 
     return(area_expense);
+}
+
+
+//Approximation of cable excavation and construction fees
+double calc_digging_expenses(Area area)
+{
+    return(area.dist_to_powergrid * PRICE_PER_KM);
+}
+
+//Approximation of the expense used to cast concrete
+double calc_foundation_expenses(Area area, Windmill windmill)
+{
+    int foundation_price_pr_kw = 290;
+
+    return(windmill.kW_max * foundation_price_pr_kw);
+
+}
+
+//Approximation of the windturbine head and stand expense
+double calc_windturbine_expense(Windmill windmill){
+
+    int turbine_price_pr_kw = 5000;
+
+    return(windmill.kW_max * turbine_price_pr_kw);
 }
 
 //Approximation of wind turbine cost when constructed on the sea
@@ -452,19 +498,6 @@ double sea_factor(Area area)
 
     return factor;
 }
-
-//Approximation of cable excavation and construction fees
-double calc_digging_expenses(Area area)
-{
-    return(area.dist_to_powergrid * PRICE_PER_KM);
-}
-
-//Not actual calculations
-double calc_roughness_expenses(Area area)
-{
-    return(area.roughness * 10000);
-}
-
 //---------------------------------------------------------------------
 const char *get_region_name(Area area)
 {
@@ -525,30 +558,25 @@ int invest_comparator(const void *p, const void *q)
     return(int)(area2->inv_return - area1->inv_return);
 }
 
-// Prints the sorted struct in the given region and returns the first index in that list  //
-void print_struct_array(Area *array, size_t len, int in_region, int *f_index) 
-{ 
-    int count = 0;
-    size_t i;
- 
-    printf("ID: \t Navn: \t\t Samlede omkostninger (kr): \t Energiproduktion (kW) \n");
-    for(i=0; i<len; i++)
-    {
-        if ((int) array[i].region == in_region)
-        {
-            count += 1;
-            printf("%d \t%s \t %.2f \t\t %.2f\n", array[i].id, array[i].name, array[i].total_expenses, array[i].kW_output);
-            
-            
-            if (count == 1) //First index is only set one time.
-            {
-                *f_index = i;
-            }
-        }
-    }
-}
 
 //---------------------------------------------------------------------
+
+int find_best_area_index(Area area[], int in_region, int in_budget){
+
+    int index = 0;
+
+    while(index < AREA_SIZE){
+
+        if ((int) area[index].region == in_region && in_budget > area[index].total_expenses)
+        {
+            break;
+        }
+        
+        index += 1;
+    }
+    
+    return index;
+}
 
 //Returns kW output from windmill calculated with given areas windspeed
 double calc_power_output(Area area, Windmill windmill)
