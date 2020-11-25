@@ -227,15 +227,9 @@ int main(void)
         //Find the best result for given sorting
         int best_index = find_best_area_index(area, region, budget);
 
-        //Print the sorted list
-        //print_area_array(area);
-
+        //Print the best result
         print_area_summary(area[best_index], windmill[wind_turbine]);
-
-        //Print out all the area data of best result
-        //print_area_data(area[best_index]);
-
-            //print_windmill_model(windmill[wind_turbine]);
+        
         printf("------------------------------------------------------\n");
         
         do
