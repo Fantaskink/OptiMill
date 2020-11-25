@@ -91,8 +91,6 @@ int main(void)
             ROUGHNESS, DIST_TO_HOUSE,
             DIST_TO_POWERGRID;
 
-
-
     //Create Struct Array
     Area area[AREA_SIZE];
 
@@ -515,7 +513,7 @@ int invest_comparator(const void *p, const void *q)
 {
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
-    return(int)(area1->inv_return - area2->inv_return);
+    return(int)(area2->inv_return - area1->inv_return);
 }
 
 // Prints the sorted struct in the given region and returns the first index in that list  //
