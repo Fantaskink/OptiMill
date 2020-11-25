@@ -76,7 +76,7 @@ double calc_wind_shear(Area area, Windmill windmill);
 double calc_windmill_income(Area area, Windmill windmill);
 void print_windmill_investment_return(Area area, Windmill windmill);
 int exp_comparator(const void *p, const void *q);
-int kw_comparator(const void *p, const void *q);
+int kW_comparator(const void *p, const void *q);
 int invest_comparator(const void *p, const void *q);
 void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
 void print_area_summary(Area area, Windmill windmill);
