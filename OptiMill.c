@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define AREA_SIZE 25 //Amount of areas
+#define AREA_SIZE 24 //Amount of areas
 #define WINDMILL_MODELS 2 //Amount of implimented windmill models
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
@@ -30,7 +30,8 @@ typedef struct Windmill
     int price;                //In Danish Crowns
     int height;               //In meters
     int wing_span;            //In meters
-    int kWh;                  //Power production of windmill
+    int kW;                   //Actual power production
+    int kW_max;               //Maximum power production
     int lifespan;             //Lifespan of windmill
 } Windmill;
 
@@ -47,7 +48,7 @@ typedef struct Area
     double dist_to_powergrid; //In km
     double expenses;          //In Danish Crowns
     double total_expenses;    //Expenses including wind turbine expenses
-    double kwh_output;        //kWh output of the specific area with regards to chosen wind turbine
+    double kW_output;        //kW output of the specific area with regards to chosen wind turbine
     double inv_return;        //Monetary return of specific windmill if placed in specific area
 } Area;
 
@@ -75,7 +76,7 @@ double calc_wind_shear(Area area, Windmill windmill);
 double calc_windmill_income(Area area, Windmill windmill);
 void print_windmill_investment_return(Area area, Windmill windmill);
 int exp_comparator(const void *p, const void *q);
-int kwh_comparator(const void *p, const void *q);
+int kW_comparator(const void *p, const void *q);
 int invest_comparator(const void *p, const void *q);
 void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
 void print_area_summary(Area area, Windmill windmill);
@@ -143,7 +144,7 @@ int main(void)
 		windmill[i].price = PRICE;
 		windmill[i].height = HEIGHT;
 		windmill[i].wing_span = WING_SPAN;
-		windmill[i].kWh = KWH;
+		windmill[i].kW_max = KWH;
 
 		i++;
 	}
@@ -190,10 +191,10 @@ int main(void)
         printf("Prioritét\t\t %s\n", get_input_priority(priority));
         printf("------------------------------------------------------\n");
 
-        //Calculate kwh_output and total expenses for all the areas
+        //Calculate kW_output and total expenses for all the areas
         for (int j = 0; j < arr_len; j++)
         {
-            area[j].kwh_output = calc_power_output(area[j], windmill[wind_turbine]);
+            area[j].kW_output = calc_power_output(area[j], windmill[wind_turbine]);
             area[j].expenses = calc_area_expenses(area[j]);
             area[j].total_expenses = calc_total_expenses(area[j], windmill[wind_turbine]);
             area[j].inv_return = calc_windmill_income(area[j], windmill[wind_turbine]);
@@ -206,8 +207,8 @@ int main(void)
             qsort(area, arr_len, sizeof(Area), exp_comparator);
             break;
 
-        case 2: //Sort the Areas by kWh output high -> low
-            qsort(area, arr_len, sizeof(Area), kwh_comparator);
+        case 2: //Sort the Areas by kW output high -> low
+            qsort(area, arr_len, sizeof(Area), kW_comparator);
             break;
 
         case 3:
@@ -226,7 +227,7 @@ int main(void)
         //Print out all the area data of all the areas in given region
         print_area_data(area[f_index]);
 
-        print_windmill_model(windmill[wind_turbine]);
+        //print_windmill_model(windmill[wind_turbine]);
 
         quit = 1;
     }
@@ -380,7 +381,7 @@ void print_area_data(Area area)
     printf("Ruhedsklasse:\t\t  %.2f\n", area.roughness);
     printf("Afstand til nærmeste hus: %.2f km\n", area.dist_to_house);
     printf("Afstand til elnettet:\t  %.2f km\n", area.dist_to_powergrid);
-    printf("Samlede kwh produktion:\t  %.2f kW\n", area.kwh_output);
+    printf("Samlede kW produktion:\t  %.2f kW\n", area.kW_output);
     printf("Terrænomkostninger:\t  %.2f kr\n", area.expenses);
     printf("Samlede omkostninger:\t  %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
@@ -393,7 +394,7 @@ void print_windmill_model(Windmill windmill){
 	printf("Pris:\t\t\t  %d kr.\n", windmill.price);
 	printf("Højde:\t\t\t  %d m\n", windmill.height);
 	printf("Vingefang:\t\t  %d m\n", windmill.wing_span);
-	printf("El produktion:\t\t  %d kWh\n", windmill.kWh);
+	printf("El produktion:\t\t  %d kWh\n", windmill.kW);
 	printf("------------------------------------------------------\n");
 }
 
@@ -401,7 +402,7 @@ void print_area_summary(Area area, Windmill windmill)
 {
     printf("Bedste valg:\n");
     printf("Navn: \t Omkostninger: \t Afkast: \t Energiproduktion:\n");
-    printf("%s  %.2f kr \t %.2f kr\t %.2f kw\n", area.name, area.expenses, calc_windmill_income(area, windmill), area.kwh_output);
+    printf("%s  %.2f kr \t %.2f kr\t %.2f kw\n", area.name, area.expenses, calc_windmill_income(area, windmill), area.kW_output);
 }
 
 //--------------------Expense calculation functions-------------------
@@ -500,12 +501,12 @@ int exp_comparator(const void *p, const void *q)
     return(int)(area1->total_expenses - area2->total_expenses);
 } 
 
-//Comparator function sorting areas kwh output from high to low
-int kwh_comparator(const void *p, const void *q)
+//Comparator function sorting areas kW output from high to low
+int kW_comparator(const void *p, const void *q)
 {
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
-    return(int)(area2->kwh_output - area1->kwh_output);
+    return(int)(area2->kW_output - area1->kW_output);
 }
 
 int invest_comparator(const void *p, const void *q)
@@ -527,7 +528,7 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index)
         if ((int) array[i].region == in_region)
         {
             count += 1;
-            printf("%d \t%s \t %.2f \t\t %.2f\n", array[i].id, array[i].name, array[i].total_expenses, array[i].kwh_output);
+            printf("%d \t%s \t %.2f \t\t %.2f\n", array[i].id, array[i].name, array[i].total_expenses, array[i].kW_output);
             
             
             if (count == 1) //First index is only set one time.
@@ -544,14 +545,21 @@ void print_struct_array(Area *array, size_t len, int in_region, int *f_index)
 double calc_power_output(Area area, Windmill windmill)
 {
     double W;
+    double kW;
     double wind_turbine_efficiency = 0.39;
     double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
     W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
     
+    kW = W / 1000; //change from watt to kW
+
+    if (kW > windmill.kW_max)
+    {
+        kW = windmill.kW_max;
+    }
     
-    return W/1000;
+    return kW;
 }
 
 //Returns the wind speed in windmills height 
