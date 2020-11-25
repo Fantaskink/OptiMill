@@ -61,6 +61,7 @@ int get_region();
 int get_wind_turbine();
 int get_priority();
 int get_budget();
+int get_user_continue();
 int get_input(const char *string, int a, int b);
 const char *get_region_name(Area area);
 
@@ -170,7 +171,7 @@ int main(void)
 
     /* ------------------------- Main code -------------------------------- */
 
-    int quit = 0;
+    int quit = 1;
     int region; 
     int wind_turbine; 
     int priority;
@@ -180,7 +181,7 @@ int main(void)
     //Get the array length of our Area struct
     arr_len = sizeof(area) / sizeof(Area);
 
-    while (!quit)
+    while (quit)
     {
         region = get_region() - 1;
         budget = get_budget();
@@ -238,7 +239,8 @@ int main(void)
 
             //print_windmill_model(windmill[wind_turbine]);
 
-        quit = 1;
+        quit = get_user_continue(); //returns 0 or 1
+        //quit = 1;
     }
     //---------------------------------------------------------------------
     return 0;
@@ -361,6 +363,13 @@ int get_wind_turbine()
     char string[] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
 
     return(get_input(string, 1, 2));
+}
+
+int get_user_continue()
+{
+    char string[] = "Vil du starte en ny beregning?:\n1. Ja\n2. Nej\n";
+
+    return(2 - get_input(string, 1, 2));
 }
 
 int get_input(const char *string, int a, int b)
