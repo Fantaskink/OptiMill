@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128 //For image printing. Laurits ved det
-#define AREA_SIZE 25 //Amount of areas
+#define AREA_SIZE 24 //Amount of areas
 #define WINDMILL_MODELS 2 //Amount of implimented windmill models
 #define PRICE_PER_KW 0.2
 #define HOURS_IN_DAY 24
