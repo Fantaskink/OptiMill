@@ -20,6 +20,6 @@
 20 Norddjurs 3 4.7 0 25 2 2 50
 21 Saltholm 0 6 0 2 1 10 10
 22 Sjaellandsodde 4 8.5 1 0 0 10 55
-23 Laesoe 2 6.7 0 7 1 2
+23 Laesoe 2 6.7 0 7 1 2 30
 24 Moen 4 6 0 5 2 2 85
 25 Lolland 4 5.2 0 5 2 2 80
