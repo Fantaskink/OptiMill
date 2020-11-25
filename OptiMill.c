@@ -175,19 +175,20 @@ int main(void)
     int region; 
     int wind_turbine; 
     int priority;
-    int budget; 
+    int budget;
+    int new_choice;
     size_t arr_len;
     
     //Get the array length of our Area struct
     arr_len = sizeof(area) / sizeof(Area);
 
+    region = get_region() - 1;
+    budget = get_budget();
+    wind_turbine = get_wind_turbine() - 1;
+    priority = get_priority();
+
     while (quit)
     {
-        region = get_region() - 1;
-        budget = get_budget();
-        wind_turbine = get_wind_turbine() - 1;
-        priority = get_priority();
-
         printf("Dine valg:\n");
         printf("------------------------------------------------------\n");
         printf("Region:\t\t\t %s\n", get_input_region_name(region));
@@ -227,17 +228,44 @@ int main(void)
         int best_index = find_best_area_index(area, region, budget);
 
         //Print the sorted list
-        print_area_array(area);
+        //print_area_array(area);
 
-            //print_area_summary(area[best_index], windmill[wind_turbine]);
+        print_area_summary(area[best_index], windmill[wind_turbine]);
 
         //Print out all the area data of best result
-        print_area_data(area[best_index]);
+        //print_area_data(area[best_index]);
 
             //print_windmill_model(windmill[wind_turbine]);
-
-        quit = get_user_continue(); //returns 0 or 1
-        //quit = 1;
+        printf("------------------------------------------------------\n");
+        
+        do
+        {
+            new_choice = get_user_continue(); //returns 0 to 6
+        
+            switch(new_choice){
+            case 1:     
+                region = get_region() - 1;
+                break;
+            case 2:
+                budget = get_budget();
+                break;
+            case 3:
+                wind_turbine = get_wind_turbine() - 1;
+                break;
+            case 4:
+                priority = get_priority();
+                break;
+            case 5:
+                print_area_data(area[best_index]);
+                break;
+            case 6:
+                break;
+            case 0:
+                quit = 0;
+            default:
+                exit(EXIT_FAILURE);    
+            }
+        } while (new_choice < 6 && quit != 0);
     }
     //---------------------------------------------------------------------
     return 0;
@@ -345,7 +373,7 @@ int get_budget()
 {
 	char string[] = "Vælg budget:\n1. 18,000,000-24,000,000 kr.\n2. 24,000,000-30,000,000 kr.\n3. 30,000,000-50,000,000 kr.\n";
 
-	return (get_input(string, 1, 3));
+	return (20000000 * get_input(string, 1, 3));
 }
 
 int get_region()
@@ -364,9 +392,9 @@ int get_wind_turbine()
 
 int get_user_continue()
 {
-    char string[] = "Vil du starte en ny beregning?:\n1. Ja\n2. Nej\n";
+    char string[] = "Vil du starte en ny beregning?:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Skab ny oversigt\n0. Afslut program\n";
 
-    return(2 - get_input(string, 1, 2));
+    return(get_input(string, 0, 6));
 }
 
 int get_input(const char *string, int a, int b)
