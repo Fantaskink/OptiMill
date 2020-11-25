@@ -221,14 +221,14 @@ int main(void)
         }
 
         //Print the sorted list
-        //print_struct_array(area, arr_len, region, &f_index);
+        print_struct_array(area, arr_len, region, &f_index);
 
         print_area_summary(area[f_index], windmill[wind_turbine]);
 
         //Print out all the area data of all the areas in given region
         //print_area_data(area[f_index]);
 
-        print_windmill_model(windmill[wind_turbine]);
+        //print_windmill_model(windmill[wind_turbine]);
 
         quit = 1;
     }
