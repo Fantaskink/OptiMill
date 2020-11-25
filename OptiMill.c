@@ -32,7 +32,7 @@ typedef struct Windmill
     int wing_span;            //In meters
     int kW;                   //Actual power production
     int kW_max;               //Maximum power production
-    int lifespan;             //Lifespan of windmill
+    //int lifespan;             //Lifespan of windmill
 } Windmill;
 
 typedef struct Area
@@ -335,9 +335,9 @@ int get_priority()
 
 int get_budget()
 {
-    char string[] = "Indtast budget i danske kroner: \n";
+	char string[] = "Vælg budget:\n1. 18,000,000-24,000,000 kr.\n2. 24,000,000-30,000,000 kr.\n3. 30,000,000-50,000,000 kr.\n";
 
-    return(get_input(string, 1, 2147483647));
+	return (get_input(string, 1, 3));
 }
 
 int get_region()
