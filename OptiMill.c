@@ -76,7 +76,8 @@ double calc_wind_shear(Area area, Windmill windmill);
 double calc_windmill_income(Area area, Windmill windmill);
 void print_windmill_investment_return(Area area, Windmill windmill);
 int exp_comparator(const void *p, const void *q);
-int kW_comparator(const void *p, const void *q);
+int kw_comparator(const void *p, const void *q);
+int invest_comparator(const void *p, const void *q);
 void print_struct_array(Area *array, size_t len, int in_region, int *f_index);
 void print_area_summary(Area area, Windmill windmill);
 
@@ -213,7 +214,7 @@ int main(void)
             break;
 
         case 3:
-            //qsort(area, arr_len, sizeof(Area), afkast(ikke lavet endnu)comparator);
+            qsort(area, arr_len, sizeof(Area), invest_comparator);
             break;
 
         default:
@@ -226,7 +227,7 @@ int main(void)
         print_area_summary(area[f_index], windmill[wind_turbine]);
 
         //Print out all the area data of all the areas in given region
-        //print_area_data(area[f_index]);
+        print_area_data(area[f_index]);
 
         //print_windmill_model(windmill[wind_turbine]);
 
@@ -329,9 +330,9 @@ const char *get_input_priority(int a)
 
 int get_priority()
 {
-    char string[] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n";
+    char string[] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n3. Prioritér højeste afkast\n";
 
-    return(get_input(string, 1, 2));
+    return(get_input(string, 1, 3));
 }
 
 int get_budget()
@@ -499,7 +500,7 @@ int exp_comparator(const void *p, const void *q)
 { 
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
-    return (int)(area1->total_expenses - area2->total_expenses);
+    return(int)(area1->total_expenses - area2->total_expenses);
 } 
 
 //Comparator function sorting areas kW output from high to low
@@ -508,6 +509,13 @@ int kW_comparator(const void *p, const void *q)
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
     return(int)(area2->kW_output - area1->kW_output);
+}
+
+int invest_comparator(const void *p, const void *q)
+{
+    Area *area1 = (Area *)p;
+    Area *area2 = (Area *)q;
+    return(int)(area1->inv_return - area2->inv_return);
 }
 
 // Prints the sorted struct in the given region and returns the first index in that list  //
