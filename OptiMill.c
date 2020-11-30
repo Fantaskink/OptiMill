@@ -122,7 +122,7 @@ int main(void)
 
     //Transfer all the data from data file into every field of area struct array
     int i = 0;
-    ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUGHEDSKLASSE, TIL_HUS, TIL_ELNET
+    ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUHEDSKLASSE, TIL_HUS, TIL_ELNET
     while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
                         &ID, NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
                         &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
@@ -253,6 +253,9 @@ int main(void)
                 print_area_data(area[best_index]);
                 break;
             case 6:
+                print_windmill_investment_return(area[best_index], windmill[wind_turbine]);
+                break;
+            case 7:
                 break;
             case 0:
                 quit = 0;
@@ -294,15 +297,19 @@ const char *get_input_region_name(int a)
     case 1:
         result = "Syddanmark";
         break;
+
     case 2:
         result = "Nordjylland";
         break;
+
     case 3:
         result = "Midtjylland";
         break;
+
     case 4:
         result = "Sjælland";
         break;
+
     default:
         result = "Fejl";
         break;
@@ -319,9 +326,11 @@ const char *get_manufacturer(int a)
     case 0:
         result = "Vestas";
         break;
+
     case 1:
         result = "Siemens";
         break;
+
     default:
         result = "Fejl";
         break;
@@ -386,9 +395,9 @@ int get_wind_turbine()
 
 int get_user_continue()
 {
-    char string[] = "Vil du starte en ny beregning?:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Skab ny oversigt\n0. Afslut program\n";
+    char string[] = "Vil du starte en ny beregning?:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Se investeringsdetaljer\n7. Skab ny oversigt\n0. Afslut program\n";
 
-    return(get_input(string, 0, 6));
+    return(get_input(string, 0, 7));
 }
 
 int get_input(const char *string, int a, int b)
@@ -698,7 +707,7 @@ void print_windmill_investment_return(Area area, Windmill windmill)
      years = years % 12;
 
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
-     printf("Det tager ");
+
 
      if (years > 0) {
 
@@ -754,6 +763,6 @@ void print_windmill_investment_return(Area area, Windmill windmill)
          }
      }
     
-     printf("Dette svare til at vindmøllen tjener: %lf Kr. i timen\n", income);
-     printf("Investeringen et årligt afkast på: %.2lf %%\n", percent);
+     printf("Dette svarer til at vindmøllen tjener: %.lf Kr. i timen\n", income);
+     printf("Investeringen giver et årligt afkast på: %.2lf %%\n", percent);
 }
