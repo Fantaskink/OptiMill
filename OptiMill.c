@@ -717,31 +717,27 @@ void print_windmill_investment_return(Area area, Windmill windmill)
 
          } else {
 
-             printf("%d måned,", months);
+             printf("%d måned", months);
 
         }
     }
 
-    if (days > 0) {
-        if (days > 1) {
-
-            printf("%d dage ", days);
-
-        } else {
-
+    if (days > 0)
+    {
+        if (days > 1) 
+            printf("%d dage, ", days);
+        else
             printf("%d dag", days);
-
-        }
-    } 
+    }
      
     if (hours > 0) { 
         if (hours > 1)
         {
-            printf("og %d timer.\n", hours);
+            printf("%d timer.", hours);
 
         } else {
 
-            printf("og %d time.\n", hours);
+            printf("%d time", hours);
 
         }
     }
