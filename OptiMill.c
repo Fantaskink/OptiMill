@@ -704,22 +704,17 @@ void print_windmill_investment_return(Area area, Windmill windmill)
     printf("Tid indtil vindmøllen har betalt for sig selv:\n");
 
 
-     if (years > 0) {
-
+     if (years > 0) 
+     {
          printf("%d år, ", years);
-         
      }
 
-     if (months > 0) {
-         if (months > 1) {
-
+     if (months > 0) 
+     {
+         if (months > 1)
              printf("%d måneder, ", months);
-
-         } else {
-
+        else
              printf("%d måned", months);
-
-        }
     }
 
     if (days > 0)
@@ -730,16 +725,12 @@ void print_windmill_investment_return(Area area, Windmill windmill)
             printf("%d dag", days);
     }
      
-    if (hours > 0) { 
+    if (hours > 0) 
+    { 
         if (hours > 1)
-        {
             printf("%d timer.", hours);
-
-        } else {
-
+        else
             printf("%d time", hours);
-
-        }
     }
     
     printf("Dette svarer til at vindmøllen tjener: %.lf Kr. i timen\n", income);
