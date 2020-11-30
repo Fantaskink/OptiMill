@@ -671,7 +671,7 @@ double calc_windmill_income(Area area, Windmill windmill)
 //Prints the yearly yield from windmill in DKK
 void print_windmill_investment_return(Area area, Windmill windmill)
 {
-     double hours, days, weeks, months, years, percent;
+     int hours, days, weeks, months, years, percent;
      double income = calc_windmill_income(area, windmill);
      
      hours = windmill.price / income;
@@ -681,32 +681,77 @@ void print_windmill_investment_return(Area area, Windmill windmill)
      years = windmill.price / income / HOURS_IN_YEAR;
      percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
+     int weeksInMonths = 4.35714286;
+     
+     days = hours / 24;
+     hours = hours % 24;
+     
+     weeks = days / 7;
+     days = days % 7;
+
+     months = weeks / weeksInMonths;
+     weeks = weeks % weeksInMonths;
+
+     years = months / 12;
+     months = months % 12;
+
+     years = years % 12;
+
      printf("Tid indtil vindmøllen har betalt for sig selv:\n");
      printf("Det tager ");
 
-     if (years > 0)
-     {
+     if (years > 0) {
+
          printf("%lf år, ", years);
+         
      }
 
-     if (hours > 0)
-     {
-         printf("%lf måneder, ", months);
+     if (months > 0) {
+         if (months > 1) {
+
+             printf("%lf måneder, ", months);
+
+         } else {
+
+             printf("%lf måned", months);
+
+         }
      }
 
-     if (weeks > 0)
-     {
-         printf("%lf uger, ", weeks);
+     if (weeks > 0) {
+         if (weeks > 1) {
+
+             printf("%lf uger, ", weeks);   
+
+         } else {
+
+             printf("%lf uge", weeks);
+
+         }
      }
 
-     if (days > 0)
-     {
-         printf("%lf dage, ", days);
+     if (days > 0) {
+         if (days > 1) {
+
+             printf("%lf dage, ", days);
+
+         } else {
+
+             printf("%lf dag", days);
+
+         }
      } 
      
-     if (hours > 0)
-     {
-         printf("%lf timer.", hours);
+     if (hours > 0) { 
+         if (hours > 1)
+         {
+             printf("%lf timer.", hours);
+
+         } else {
+
+             printf("%lf time", hours);
+
+         }
      }
     
      printf("Dette svare til at vindmøllen tjener: %lf Kr. i timen\n", income);
