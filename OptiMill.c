@@ -734,5 +734,5 @@ void print_windmill_investment_return(Area area, Windmill windmill)
     }
     
     printf("Dette svarer til at vindmøllen tjener: %.lf Kr. i timen\n", income);
-    printf("Investeringen giver et årligt afkast på: %.2lf\n", percent);
+    printf("Investeringen giver et årligt afkast på: %.2lf %%\n", percent);
 }
