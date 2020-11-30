@@ -693,6 +693,9 @@ void print_windmill_investment_return(Area area, Windmill windmill)
     days = hours / 24;
     hours = hours % 24;
      
+    months = days / 31;
+    days = days % 31;
+    
     years = months / 12;
     months = months % 12;
 
