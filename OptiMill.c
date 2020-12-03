@@ -143,7 +143,7 @@ int main(void)
     //Transfer all the information from model file into every field of the windmill struct array
     i = 0;
 	while (fscanf(model, "%d %s %d %d %d %d",
-				  &ID, NAME, &PRICE, &HEIGHT, &WING_SPAN, &KWH) > 0)
+	        &ID, NAME, &PRICE, &HEIGHT, &WING_SPAN, &KWH) > 0)
 	{
 		windmill[i].id = ID;
 		strcpy(windmill[i].name, NAME);
@@ -314,7 +314,6 @@ const char *get_input_region_name(int a)
         result = "Fejl";
         break;
     }
-
     return result;
 }
 
@@ -335,7 +334,6 @@ const char *get_manufacturer(int a)
         result = "Fejl";
         break;
     }
-
     return result;
 }
 
@@ -361,7 +359,6 @@ const char *get_input_priority(int a)
         result = "Fejl";
         break;
     }
-
     return result;
 }
 
@@ -454,7 +451,6 @@ void print_area_summary(Area area, Windmill windmill)
 // Prints the entire area array - FOR DEBUGGING  //
 void print_area_array(Area area[]) 
 { 
- 
     printf("ID: \t Navn: \t\t Samlede omkostninger (kr): \t Energiproduktion (kW) \n");
     for(int i=0; i<AREA_SIZE; i++)
     {
@@ -484,7 +480,6 @@ double calc_area_expenses(Area area, Windmill windmill)
         (calc_digging_expenses(area) +
         calc_foundation_expenses(area, windmill) +
         transport_expense) * sea_factor(area);
-        
 
     return(area_expense);
 }
@@ -526,7 +521,6 @@ double sea_factor(Area area)
     {
         factor = 1;
     }
-
     return factor;
 }
 //---------------------------------------------------------------------
@@ -605,7 +599,6 @@ int find_best_area_index(Area area[], int in_region, int in_budget){
         
         index += 1;
     }
-    
     return index;
 }
 
@@ -618,6 +611,7 @@ double calc_power_output(Area area, Windmill windmill)
     double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
+
     W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
     
     kW = W / 1000; //change from watt to kW
@@ -703,18 +697,16 @@ void print_windmill_investment_return(Area area, Windmill windmill)
 
     printf("Tid indtil vindmøllen har betalt for sig selv:\n");
 
-
-     if (years > 0) 
-     {
-         printf("%d år, ", years);
-     }
+    if (years > 0) 
+        printf("%d år, ", years);
+    
 
      if (months > 0) 
      {
-         if (months > 1)
-             printf("%d måneder, ", months);
+        if (months > 1)
+            printf("%d måneder, ", months);
         else
-             printf("%d måned", months);
+            printf("%d måned", months);
     }
 
     if (days > 0)
@@ -732,7 +724,6 @@ void print_windmill_investment_return(Area area, Windmill windmill)
         else
             printf("%d time", hours);
     }
-    
     printf("Dette svarer til at vindmøllen tjener: %.lf Kr. i timen\n", income);
     printf("Investeringen giver et årligt afkast på: %.2lf %%\n", percent);
 }
