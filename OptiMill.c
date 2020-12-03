@@ -41,7 +41,6 @@ typedef struct Area
     char name[50];            //Name of the area
     region region;            //Region of the area
     double wind_speed;        //Raw wind speed of area in meters per second
-    int in_sea;               //Is equal to 1 if the area is at sea
     double land_height;       //In meters
     double roughness;         //Roughness class: 0..4
     double dist_to_house;     //In km
@@ -69,7 +68,6 @@ double calc_total_expenses(Area area, Windmill windmill);
 double calc_area_expenses(Area area, Windmill windmill);
 double calc_digging_expenses(Area area);
 double calc_foundation_expenses(Area area, Windmill windmill);
-double sea_factor(Area area);
 
 double calc_power_output(Area area, Windmill windmill);
 double calc_wind_shear(Area area, Windmill windmill);
@@ -90,7 +88,7 @@ void print_image(FILE *fptr);
 int main(void)
 {
     //Temporary variables for loading structs
-    int ID, IN_SEA, REGION;
+    int ID, REGION;
     int PRICE, HEIGHT, WING_SPAN, KWH;
     char NAME[50];                      
     double  WIND_SPEED, LAND_HEIGHT,
@@ -122,16 +120,15 @@ int main(void)
 
     //Transfer all the data from data file into every field of area struct array
     int i = 0;
-    ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUHEDSKLASSE, TIL_HUS, TIL_ELNET
-    while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
-                        &ID, NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
+    ////ID, NAVN, REGION, VINDHASTIGHED, LAND_HØJDE, RUHEDSKLASSE, TIL_HUS, TIL_ELNET
+    while (fscanf(data, "%d %s %d %lf %lf %lf %lf %lf",
+                        &ID, NAME, &REGION, &WIND_SPEED, &LAND_HEIGHT, &ROUGHNESS,
                         &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
     {
         area[i].id = ID;
         strcpy(area[i].name, NAME);
         area[i].region = REGION;
         area[i].wind_speed = WIND_SPEED;
-        area[i].in_sea = IN_SEA;
         area[i].land_height = LAND_HEIGHT;
         area[i].roughness = ROUGHNESS;
         area[i].dist_to_house = DIST_TO_HOUSE;
@@ -419,7 +416,6 @@ void print_area_data(Area area)
     printf("Navn:\t\t\t  %s\n", area.name);
     printf("Region:\t\t\t  %s\n", get_region_name(area));
     printf("Vindhastighed:\t\t  %.2f m/s\n", area.wind_speed);
-    printf("På havet:\t\t  %d\n", area.in_sea);
     printf("Landhøjde:\t\t  %.2f m\n", area.land_height);
     printf("Ruhedsklasse:\t\t  %.2f\n", area.roughness);
     printf("Afstand til nærmeste hus: %.2f km\n", area.dist_to_house);
@@ -479,7 +475,7 @@ double calc_area_expenses(Area area, Windmill windmill)
     area_expense =
         (calc_digging_expenses(area) +
         calc_foundation_expenses(area, windmill) +
-        transport_expense) * sea_factor(area);
+        transport_expense);
 
     return(area_expense);
 }
@@ -508,21 +504,6 @@ double calc_windturbine_expense(Windmill windmill){
     return(windmill.kW_max * turbine_price_pr_kw);
 }
 
-//Approximation of wind turbine cost when constructed on the sea
-double sea_factor(Area area)
-{
-    double factor;
-
-    if(area.in_sea > 0)
-    {
-        factor = 2.6;
-    }
-    else
-    {
-        factor = 1;
-    }
-    return factor;
-}
 //---------------------------------------------------------------------
 const char *get_region_name(Area area)
 {
