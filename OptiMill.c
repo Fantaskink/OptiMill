@@ -5,7 +5,7 @@
 #define MAX_LEN 128 //For image printing. Laurits ved det
 #define AREA_SIZE 25 //Amount of areas
 #define WINDMILL_MODELS 2 //Amount of implimented windmill models
-#define PRICE_PER_KW 0.2
+#define PRICE_PER_KWH 0.2
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
 #define HOURS_IN_MONTH 732
@@ -413,13 +413,13 @@ void print_area_data(Area area)
     printf("Navn:\t\t\t  %s\n", area.name);
     printf("Region:\t\t\t  %s\n", get_region_name(area));
     printf("Vindhastighed:\t\t  %.2f m/s\n", area.wind_speed);
-    printf("På havet:\t\t  %d\n", area.in_sea);
-    printf("Landhøjde:\t\t  %.2f m\n", area.land_height);
+    printf("Paa havet:\t\t  %d\n", area.in_sea);
+    printf("Landhoejde:\t\t  %.2f m\n", area.land_height);
     printf("Ruhedsklasse:\t\t  %.2f\n", area.roughness);
-    printf("Afstand til nærmeste hus: %.2f km\n", area.dist_to_house);
+    printf("Afstand til naermeste hus: %.2f km\n", area.dist_to_house);
     printf("Afstand til elnettet:\t  %.2f km\n", area.dist_to_powergrid);
     printf("Samlede kW produktion:\t  %.2f kW\n", area.kW_output);
-    printf("Terrænomkostninger:\t  %.2f kr\n", area.expenses);
+    printf("Terraenomkostninger:\t  %.2f kr\n", area.expenses);
     printf("Samlede omkostninger:\t  %.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
@@ -428,8 +428,8 @@ void print_windmill_model(Windmill windmill){
 	printf("------------------------------------------------------\n");
 	printf("ID: \t\t\t  %d\n", windmill.id);
 	printf("Navn:\t\t\t  %s\n", windmill.name);
-	printf("Pris:\t\t\t  %d kr.\n", windmill.price);
-	printf("Højde:\t\t\t  %d m\n", windmill.height);
+	printf("Vejl. Pris:\t\t\t  %d kr.\n", windmill.price);
+	printf("Hoejde:\t\t\t  %d m\n", windmill.height);
 	printf("Vingefang:\t\t  %d m\n", windmill.wing_span);
 	printf("El produktion:\t\t  %d kWh\n", windmill.kW);
 	printf("------------------------------------------------------\n");
@@ -437,9 +437,11 @@ void print_windmill_model(Windmill windmill){
 
 void print_area_summary(Area area, Windmill windmill)
 {
+    double yearly_income = calc_windmill_income(area, windmill);
+
     printf("Bedste valg:\n");
-    printf("Navn: \t Omkostninger: \t Afkast: \t Energiproduktion:\n");
-    printf("%s  %.2f kr \t %.2f kr\t %.2f kw\n", area.name, area.expenses, calc_windmill_income(area, windmill), area.kW_output);
+    printf("Navn: \t Samlede omkostninger: \t Aarligt afkast: \t Energiproduktion:\n");
+    printf("%s  %.2f kr \t %.2f kr/aar\t %.2f kw\n", area.name, area.total_expenses, yearly_income, area.kW_output);
 }
 
 // Prints the entire area array - FOR DEBUGGING  //
@@ -664,7 +666,7 @@ double calc_wind_shear(Area area, Windmill windmill)
 //Return the hourly yield from windmill in DKK
 double calc_windmill_income(Area area, Windmill windmill)
 {
-    double hourly_income = calc_power_output(area, windmill) * PRICE_PER_KW;
+    double hourly_income = calc_power_output(area, windmill) * PRICE_PER_KWH;
     return(hourly_income);
 }
 
@@ -673,7 +675,8 @@ void print_windmill_investment_return(Area area, Windmill windmill)
 {
      double hours, days, weeks, months, years, percent;
      double income = calc_windmill_income(area, windmill);
-     
+     double yearly_income = income * HOURS_IN_DAY;
+
      hours = windmill.price / income;
      days = windmill.price / income / HOURS_IN_DAY;
      weeks = windmill.price / income / HOURS_IN_WEEK;
@@ -709,6 +712,6 @@ void print_windmill_investment_return(Area area, Windmill windmill)
          printf("%lf timer.", hours);
      }
     
-     printf("Dette svare til at vindmøllen tjener: %lf Kr. i timen\n", income);
+     printf("Dette svare til at vindmøllen tjener: %lf Kr. om året\n", yearly_income);
      printf("Investeringen et årligt afkast på: %.2lf %%\n", percent);
 }
