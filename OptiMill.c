@@ -41,7 +41,6 @@ typedef struct Area
     char name[50];            //Name of the area
     region region;            //Region of the area
     double wind_speed;        //Raw wind speed of area in meters per second
-    int in_sea;               //Is equal to 1 if the area is at sea
     double land_height;       //In meters
     double roughness;         //Roughness class: 0..4
     double dist_to_house;     //In km
@@ -69,7 +68,6 @@ double calc_total_expenses(Area area, Windmill windmill);
 double calc_area_expenses(Area area, Windmill windmill);
 double calc_digging_expenses(Area area);
 double calc_foundation_expenses(Area area, Windmill windmill);
-double sea_factor(Area area);
 
 double calc_power_output(Area area, Windmill windmill);
 double calc_wind_shear(Area area, Windmill windmill);
@@ -90,7 +88,7 @@ void print_image(FILE *fptr);
 int main(void)
 {
     //Temporary variables for loading structs
-    int ID, IN_SEA, REGION;
+    int ID, REGION;
     int PRICE, HEIGHT, WING_SPAN, KWH;
     char NAME[50];                      
     double  WIND_SPEED, LAND_HEIGHT,
@@ -122,16 +120,15 @@ int main(void)
 
     //Transfer all the data from data file into every field of area struct array
     int i = 0;
-    ////ID, NAVN, REGION, VINDHASTIGHED, I_VAND, LAND_HØJDE, RUGHEDSKLASSE, TIL_HUS, TIL_ELNET
-    while (fscanf(data, "%d %s %d %lf %d %lf %lf %lf %lf",
-                        &ID, NAME, &REGION, &WIND_SPEED, &IN_SEA, &LAND_HEIGHT, &ROUGHNESS,
+    ////ID, NAVN, REGION, VINDHASTIGHED, LAND_HØJDE, RUHEDSKLASSE, TIL_HUS, TIL_ELNET
+    while (fscanf(data, "%d %s %d %lf %lf %lf %lf %lf",
+                        &ID, NAME, &REGION, &WIND_SPEED, &LAND_HEIGHT, &ROUGHNESS,
                         &DIST_TO_HOUSE, &DIST_TO_POWERGRID) > 0)
     {
         area[i].id = ID;
         strcpy(area[i].name, NAME);
         area[i].region = REGION;
         area[i].wind_speed = WIND_SPEED;
-        area[i].in_sea = IN_SEA;
         area[i].land_height = LAND_HEIGHT;
         area[i].roughness = ROUGHNESS;
         area[i].dist_to_house = DIST_TO_HOUSE;
@@ -143,7 +140,7 @@ int main(void)
     //Transfer all the information from model file into every field of the windmill struct array
     i = 0;
 	while (fscanf(model, "%d %s %d %d %d %d",
-				  &ID, NAME, &PRICE, &HEIGHT, &WING_SPAN, &KWH) > 0)
+	        &ID, NAME, &PRICE, &HEIGHT, &WING_SPAN, &KWH) > 0)
 	{
 		windmill[i].id = ID;
 		strcpy(windmill[i].name, NAME);
@@ -253,6 +250,9 @@ int main(void)
                 print_area_data(area[best_index]);
                 break;
             case 6:
+                print_windmill_investment_return(area[best_index], windmill[wind_turbine]);
+                break;
+            case 7:
                 break;
             case 0:
                 quit = 0;
@@ -294,20 +294,23 @@ const char *get_input_region_name(int a)
     case 1:
         result = "Syddanmark";
         break;
+
     case 2:
         result = "Nordjylland";
         break;
+
     case 3:
         result = "Midtjylland";
         break;
+
     case 4:
         result = "Sjælland";
         break;
+
     default:
         result = "Fejl";
         break;
     }
-
     return result;
 }
 
@@ -319,14 +322,15 @@ const char *get_manufacturer(int a)
     case 0:
         result = "Vestas";
         break;
+
     case 1:
         result = "Siemens";
         break;
+
     default:
         result = "Fejl";
         break;
     }
-
     return result;
 }
 
@@ -352,7 +356,6 @@ const char *get_input_priority(int a)
         result = "Fejl";
         break;
     }
-
     return result;
 }
 
@@ -386,9 +389,9 @@ int get_wind_turbine()
 
 int get_user_continue()
 {
-    char string[] = "Vil du starte en ny beregning?:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Skab ny oversigt\n0. Afslut program\n";
+    char string[] = "Vil du starte en ny beregning?:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Se investeringsdetaljer\n7. Skab ny oversigt\n0. Afslut program\n";
 
-    return(get_input(string, 0, 6));
+    return(get_input(string, 0, 7));
 }
 
 int get_input(const char *string, int a, int b)
@@ -413,7 +416,6 @@ void print_area_data(Area area)
     printf("Navn:\t\t\t  %s\n", area.name);
     printf("Region:\t\t\t  %s\n", get_region_name(area));
     printf("Vindhastighed:\t\t  %.2f m/s\n", area.wind_speed);
-    printf("Paa havet:\t\t  %d\n", area.in_sea);
     printf("Landhoejde:\t\t  %.2f m\n", area.land_height);
     printf("Ruhedsklasse:\t\t  %.2f\n", area.roughness);
     printf("Afstand til naermeste hus: %.2f km\n", area.dist_to_house);
@@ -447,7 +449,6 @@ void print_area_summary(Area area, Windmill windmill)
 // Prints the entire area array - FOR DEBUGGING  //
 void print_area_array(Area area[]) 
 { 
- 
     printf("ID: \t Navn: \t\t Samlede omkostninger (kr): \t Energiproduktion (kW) \n");
     for(int i=0; i<AREA_SIZE; i++)
     {
@@ -476,8 +477,7 @@ double calc_area_expenses(Area area, Windmill windmill)
     area_expense =
         (calc_digging_expenses(area) +
         calc_foundation_expenses(area, windmill) +
-        transport_expense) * sea_factor(area);
-        
+        transport_expense);
 
     return(area_expense);
 }
@@ -506,22 +506,6 @@ double calc_windturbine_expense(Windmill windmill){
     return(windmill.kW_max * turbine_price_pr_kw);
 }
 
-//Approximation of wind turbine cost when constructed on the sea
-double sea_factor(Area area)
-{
-    double factor;
-
-    if(area.in_sea > 0)
-    {
-        factor = 2.6;
-    }
-    else
-    {
-        factor = 1;
-    }
-
-    return factor;
-}
 //---------------------------------------------------------------------
 const char *get_region_name(Area area)
 {
@@ -598,7 +582,6 @@ int find_best_area_index(Area area[], int in_region, int in_budget){
         
         index += 1;
     }
-    
     return index;
 }
 
@@ -611,6 +594,7 @@ double calc_power_output(Area area, Windmill windmill)
     double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
+
     W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
     
     kW = W / 1000; //change from watt to kW
@@ -673,39 +657,49 @@ double calc_windmill_income(Area area, Windmill windmill)
 //Prints the yearly yield from windmill in DKK
 void print_windmill_investment_return(Area area, Windmill windmill)
 {
-     double hours, days, weeks, months, years, percent;
-     double income = calc_windmill_income(area, windmill);
-     double yearly_income = income * HOURS_IN_DAY;
+    int hours, days, weeks, months, years;
+    double percent;
+    double income = calc_windmill_income(area, windmill);
+    double yearly_income = income * HOURS_IN_YEAR;
+    
+    hours = windmill.price / income;
+    days = windmill.price / income / HOURS_IN_DAY;
+    months = windmill.price / income / HOURS_IN_MONTH;
+    years = windmill.price / income / HOURS_IN_YEAR;
+    percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
-     hours = windmill.price / income;
-     days = windmill.price / income / HOURS_IN_DAY;
-     weeks = windmill.price / income / HOURS_IN_WEEK;
-     months = windmill.price / income / HOURS_IN_MONTH;
-     years = windmill.price / income / HOURS_IN_YEAR;
-     percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
+    days = hours / 24;
+    hours = hours % 24;
+     
+    months = days / 31;
+    days = days % 31;
+    
+    years = months / 12;
+    months = months % 12;
 
-     printf("Tid indtil vindmøllen har betalt for sig selv:\n");
-     printf("Det tager ");
+    years = years % 12;
 
-     if (years > 0)
+    printf("Tid indtil vindmøllen har betalt for sig selv:\n");
+
+    if (years > 0) 
+        printf("%d år, ", years);
+    
+
+     if (months > 0) 
      {
-         printf("%lf år, ", years);
-     }
+        if (months > 1)
+            printf("%d måneder, ", months);
+        else
+            printf("%d måned", months);
+    }
 
-     if (hours > 0)
-     {
-         printf("%lf måneder, ", months);
-     }
-
-     if (weeks > 0)
-     {
-         printf("%lf uger, ", weeks);
-     }
-
-     if (days > 0)
-     {
-         printf("%lf dage, ", days);
-     } 
+    if (days > 0)
+    {
+        if (days > 1) 
+            printf("%d dage, ", days);
+        else
+            printf("%d dag", days);
+    }
      
      if (hours > 0)
      {
