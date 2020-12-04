@@ -13,3 +13,20 @@ Gruppemedlemmer:
 * Laurits Lippert
 * Nicolai Mandrup
 * Sture Svensson
+
+# Run/Compile
+
+Hent github repository ved brug af git clone eller download zip filen.
+
+Compile og run på Mac 
+```console
+  gcc-10 Optimill.c -o optimill
+  ./optimill.out
+```
+
+Compile og run på Windows 10
+```console
+  gcc Optimill.c -o optimill
+  optimill.exe
+```
+
