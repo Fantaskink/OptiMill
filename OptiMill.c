@@ -39,7 +39,7 @@ typedef struct Area
 {
     int id;                   //ID of the area
     char name[50];            //Name of the area
-    region region;            //Region of the area
+    region region;            //Region in which the area is located
     double wind_speed;        //Raw wind speed of area in meters per second
     double land_height;       //In meters
     double roughness;         //Roughness class: 0..4
@@ -408,7 +408,7 @@ int get_input(const char *string, int a, int b)
     return(input);
 }
 
-//Prints all the data inside given area
+//Prints all the details inside given area
 void print_area_data(Area area)
 {
     printf("------------------------------------------------------\n");
@@ -437,6 +437,7 @@ void print_windmill_model(Windmill windmill){
 	printf("------------------------------------------------------\n");
 }
 
+//Prints the optimal area
 void print_area_summary(Area area, Windmill windmill)
 {
     double yearly_income = calc_windmill_income(area, windmill);
