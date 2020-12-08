@@ -257,7 +257,7 @@ int main(void)
             default:
                 exit(EXIT_FAILURE);    
             }
-        } while (new_choice < 6 && quit != 0);
+        } while (new_choice < 7 && quit != 0);
     }
     //---------------------------------------------------------------------
     return 0;
@@ -318,11 +318,11 @@ const char *get_manufacturer(int a)
     switch (a)
     {
     case 0:
-        result = "Vestas";
+        result = "Vestas V90 - 2MW";
         break;
 
     case 1:
-        result = "Siemens";
+        result = "Siemens SG 2.6MW - 114";
         break;
 
     default:
@@ -366,7 +366,7 @@ int get_priority()
 
 int get_budget()
 {
-	char string[] = "Vælg budget:\n1. 18,000,000-24,000,000 kr.\n2. 24,000,000-30,000,000 kr.\n3. 30,000,000-50,000,000 kr.\n";
+	char string[] = "Vælg budgetklasse:\n1. 20.000.000 kr.\n2. 40.000.000 kr.\n3. 60.000.000 kr.\n";
 
 	return (20000000 * get_input(string, 1, 3));
 }
@@ -380,7 +380,7 @@ int get_region()
 
 int get_wind_turbine()
 {
-    char string[] = "Vælg vindmølle:\n1. Vestas\n2. Siemens\n";
+    char string[] = "Vælg vindmølle:\n1. Vestas V90 - 2MW\n2. Siemens SG 2.6MW - 114\n";
 
     return(get_input(string, 1, 2));
 }
@@ -672,6 +672,8 @@ void print_windmill_investment_return(Area area, Windmill windmill)
 
     years = years % 12;
 
+    printf("Investeringsdetaljer\n");
+    printf("------------------------------------------------------\n");
     printf("Tid indtil vindmøllen har betalt for sig selv:\n");
 
     if (years > 0) 
@@ -696,9 +698,10 @@ void print_windmill_investment_return(Area area, Windmill windmill)
      
      if (hours > 0)
      {
-         printf("%lf timer.", hours);
+         printf("%d timer.\n", hours);
      }
     
-     printf("Dette svare til at vindmøllen tjener: %lf Kr. om året\n", yearly_income);
-     printf("Investeringen et årligt afkast på: %.2lf %%\n", percent);
+     printf("Dette svare til at vindmøllen tjener: %.2lf Kr. om året\n", yearly_income);
+     printf("Investeringen har et årligt afkast på: %.2lf %%\n", percent);
+     printf("------------------------------------------------------\n");
 }
