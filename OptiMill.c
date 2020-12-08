@@ -6,6 +6,7 @@
 #define AREA_SIZE 25 //Amount of areas
 #define WINDMILL_MODELS 2 //Amount of implimented windmill models
 #define PRICE_PER_KWH 0.2
+#define TURBINE_PRICE_PER_KW 5000 
 #define HOURS_IN_DAY 24
 #define HOURS_IN_WEEK 168
 #define HOURS_IN_MONTH 732
@@ -89,7 +90,7 @@ int main(void)
 {
     //Temporary variables for loading structs
     int ID, REGION;
-    int PRICE, HEIGHT, WING_SPAN, KWH;
+    int HEIGHT, WING_SPAN, KW_MAX;
     char NAME[50];                      
     double  WIND_SPEED, LAND_HEIGHT,
             ROUGHNESS, DIST_TO_HOUSE,
@@ -97,11 +98,9 @@ int main(void)
 
     //Create Struct Array
     Area area[AREA_SIZE];
-
     Windmill windmill[WINDMILL_MODELS];
 
     //Read from data file
-
     FILE* data = fopen("data.txt", "r");
 
     FILE* model = fopen("model.txt", "r");
@@ -139,16 +138,15 @@ int main(void)
 
     //Transfer all the information from model file into every field of the windmill struct array
     i = 0;
-	while (fscanf(model, "%d %s %d %d %d %d",
-	        &ID, NAME, &PRICE, &HEIGHT, &WING_SPAN, &KWH) > 0)
+	while (fscanf(model, "%d %s %d %d %d",
+	        &ID, NAME, &HEIGHT, &WING_SPAN, &KW_MAX) > 0)
 	{
 		windmill[i].id = ID;
 		strcpy(windmill[i].name, NAME);
-		windmill[i].price = PRICE;
 		windmill[i].height = HEIGHT;
 		windmill[i].wing_span = WING_SPAN;
-		windmill[i].kW_max = KWH;
-
+		windmill[i].kW_max = KW_MAX;
+        windmill[i].price = KW_MAX * TURBINE_PRICE_PER_KW;
 		i++;
 	}
 
@@ -439,11 +437,11 @@ void print_windmill_model(Windmill windmill){
 
 void print_area_summary(Area area, Windmill windmill)
 {
-    double yearly_income = calc_windmill_income(area, windmill);
-
+    double yearly_income = calc_windmill_income(area, windmill) * HOURS_IN_YEAR;
+    double yearly_production = area.kW_output * HOURS_IN_YEAR / pow(10, 6);
     printf("Bedste valg:\n");
-    printf("Navn: \t Samlede omkostninger: \t Aarligt afkast: \t Energiproduktion:\n");
-    printf("%s  %.2f kr \t %.2f kr/aar\t %.2f kw\n", area.name, area.total_expenses, yearly_income, area.kW_output);
+    printf("Navn: \t Samlede omkostninger: \t Aarlig afkast (kr): \t Aarlig energiproduktion (GWh):\n");
+    printf("%s  %.2f kr \t %.2f kr/aar\t %.2f GWh\n", area.name, area.total_expenses, yearly_income, yearly_production);
 }
 
 // Prints the entire area array - FOR DEBUGGING  //
@@ -462,7 +460,7 @@ double calc_total_expenses(Area area, Windmill windmill)
 {
     double total_expense;
 
-    total_expense = (area.expenses + windmill.price);
+    total_expense = (area.expenses) + windmill.price;
 
     return(total_expense);
 }
@@ -496,14 +494,6 @@ double calc_foundation_expenses(Area area, Windmill windmill)
 
     return(windmill.kW_max * foundation_price_pr_kw);
 
-}
-
-//Approximation of the windturbine head and stand expense
-double calc_windturbine_expense(Windmill windmill){
-
-    int turbine_price_pr_kw = 5000;
-
-    return(windmill.kW_max * turbine_price_pr_kw);
 }
 
 //---------------------------------------------------------------------
@@ -599,10 +589,12 @@ double calc_power_output(Area area, Windmill windmill)
     
     kW = W / 1000; //change from watt to kW
 
+    /*
     if (kW > windmill.kW_max)
     {
         kW = windmill.kW_max;
     }
+    */
     
     return kW;
 }

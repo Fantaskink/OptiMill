@@ -8,9 +8,9 @@
 8 Roenne 0 5.5 16 0.5 5 5
 9 Sjaelsmark 4 3.3 43 1 2 2
 10 Billund 1 4.6 50 2 20 10
-11 Hirtshals 2 10 0 0 10 75
-12 Hanstholm 2 10 0 0 10 100
-13 Bagenkop 1 10 0 0 10 100
+11 Hirtshals 2 10 0 0 10 7
+12 Hanstholm 2 10 0 0 10 10
+13 Bagenkop 1 10 0 0 10 12
 14 Brandsby 1 6 28 2 4 85
 15 Flakkebjerg 4 4.4 30 3 2 12.5
 16 Aeroe 1 5.5 40 2 4 90
