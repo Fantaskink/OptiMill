@@ -629,8 +629,8 @@ void print_windmill_investment_return(Area area, Windmill windmill)
         printf("%d år, ", years);
     
 
-     if (months > 0) 
-     {
+    if (months > 0) 
+    {
         if (months > 1)
             printf("%d måneder, ", months);
         else
@@ -645,10 +645,9 @@ void print_windmill_investment_return(Area area, Windmill windmill)
             printf("%d dag", days);
     }
      
-     if (hours > 0)
-     {
-         printf("%d timer.\n", hours);
-     }
+    if (hours > 0)
+        printf("%d timer.\n", hours);
+    
     
      printf("Dette svare til at vindmøllen tjener: %.2lf Kr. om året\n", yearly_income);
      printf("Investeringen har et årligt afkast på: %.2lf %%\n", percent);
