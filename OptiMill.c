@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #define MAX_LEN 128             //Used when printing the optimill logo
-#define AREA_SIZE 25            //Amount of implemented areas
+#define AREA_COUNT 25            //Amount of implemented areas
 #define WINDMILL_MODELS 2       //Amount of implemented windmill models
 #define PRICE_PER_KWH 0.2       //The return price for selling 1 KWh of electricity
 #define PRICE_PER_KM 200000     //Price for cable digging being 200 kr pr. meter
@@ -86,7 +86,7 @@ void print_image(char *filename);
 int main(void)
 {
     //Create Struct Array
-    Area area[AREA_SIZE];
+    Area area[AREA_COUNT];
     Windmill windmill[WINDMILL_MODELS];
 
     //Read from data file
@@ -110,7 +110,7 @@ int main(void)
     while (!feof(data)) 
     {
         fscanf(data, " %d %s %d %lf %lf %lf %lf %lf",
-                        &area[i].id, &area[i].name, &area[i].region,
+                        &area[i].id, area[i].name, &area[i].region,
                         &area[i].wind_speed, &area[i].land_height, &area[i].roughness,
                         &area[i].dist_to_house, &area[i].dist_to_powergrid);
         i++;
@@ -122,7 +122,7 @@ int main(void)
 	while (!feof(model))
 	{
         fscanf(model, " %d %s %d %d %d",
-	        &windmill[i].id, &windmill[i].name, 
+	        &windmill[i].id, windmill[i].name, 
             &windmill[i].height, &windmill[i].wing_span, 
             &windmill[i].kW_max);
 
@@ -164,7 +164,7 @@ int main(void)
         printf("Prioritét\t\t %s\n", get_input_priority(priority));
         printf("------------------------------------------------------\n");
 
-        //Calculate for all the areas their energy production, installation expenses, total expenses and the investement return
+        //Calculate for all the areas their energy production, installation expenses, total expenses and the investment return
         for (int j = 0; j < arr_len; j++)
         {
             area[j].kW_output = calc_power_output(area[j], windmill[wind_turbine]);
@@ -240,7 +240,7 @@ int main(void)
     return 0;
 }
 
-//Takes our ascii image file and prints to terminal
+//Takes our ASCII image file and prints to terminal
 void print_image(char *filename)
 {
     FILE *fptr = fopen(filename, "r");
@@ -248,7 +248,7 @@ void print_image(char *filename)
     /*Check if we got the pointer to the file */
     if (fptr == NULL)
     {
-        printf("Fejl ved indlæsning af logo%s\n");
+        printf("Fejl ved indlæsning af logo\n");
         exit(EXIT_FAILURE);
     }
 
@@ -267,7 +267,7 @@ void print_image(char *filename)
     printf("\n");
 }
 
-/* These functions all returns back integer values corresponding to the choices made by the user */
+/* These functions all return integer values corresponding to the choices made by the user */
 int get_priority()
 {
     char string[] = "Vælg prioritet:\n1. Prioritér laveste omkostninger\n2. Prioritér højeste energiproduktion\n3. Prioritér højeste afkast\n";
@@ -298,12 +298,12 @@ int get_wind_turbine()
 
 int get_user_continue()
 {
-    char string[] = "Valg muligheder:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Se detaljer på vindmølle model\n7. Se investeringsdetaljer\n8. Skab ny oversigt\n0. Afslut program\n";
+    char string[] = "Valg muligheder:\n1. Vælg ny region\n2. Indtast nyt budget\n3. Vælg anden vindmøllemodel\n4. Vælg sorteringsmulighed\n5. Se detaljer på bedst valgte område\n6. Se detaljer på vindmøllemodel\n7. Se investeringsdetaljer\n8. Skab ny oversigt\n0. Afslut program\n";
 
     return(get_input(string, 0, 8));
 }
 
-//Handles all user input and ensures the input is in the given range. It returns the users input as an int.
+//Handles all user input and ensures the input is in the given range. It returns the user's input as an int.
 int get_input(const char *string, int a, int b)
 {
     char c;
@@ -313,7 +313,7 @@ int get_input(const char *string, int a, int b)
         printf("%s", string);
     }
 
-    /*If some of these criteria gets back as true then it means the user inputted something out of range
+    /*If some of these criteria get back as true then it means the user inputted something out of range
      and the user gets prompted with the incomming string once again*/
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < a || input > b);
     
@@ -441,7 +441,7 @@ void print_area_summary(Area area, Windmill windmill)
     double yearly_production = area.kW_output * HOURS_IN_YEAR / pow(10, 6);
     double total_expenses_mio = area.total_expenses / pow(10, 6);
     printf("Bedste valg:\n");
-    printf("Navn: \t\t Samlede omkostninger: Årlig afkast: Årlig energiproduktion:\n");
+    printf("Navn: \t\t Samlede omkostninger: Årlige afkast: Årlige energiproduktion:\n");
     printf("%s \t %.2f mio. kr\t\t%.2f mio/år\t%.2f GWh\n", area.name, total_expenses_mio, yearly_income, yearly_production);
 }
 
@@ -483,9 +483,7 @@ double calc_foundation_expenses(Area area, Windmill windmill)
     int foundation_price_pr_kw = 290;
 
     return(windmill.kW_max * foundation_price_pr_kw);
-
 }
-
 
 //--------------------Sorting algorithm functions-------------------
 //Comparator function for sorting areas expenses from low to high
@@ -493,6 +491,7 @@ int exp_comparator(const void *p, const void *q)
 { 
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
+
     return(int)(area1->total_expenses - area2->total_expenses);
 } 
 
@@ -501,6 +500,7 @@ int kW_comparator(const void *p, const void *q)
 {
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
+
     return(int)(area2->kW_output - area1->kW_output);
 }
 
@@ -509,6 +509,7 @@ int invest_comparator(const void *p, const void *q)
 {
     Area *area1 = (Area *)p;
     Area *area2 = (Area *)q;
+
     return(int)(area2->inv_return - area1->inv_return);
 }
 
@@ -519,7 +520,7 @@ int find_best_area_index(Area area[], int in_region, int in_budget){
 
     int index = 0;
 
-    while(index < AREA_SIZE){
+    while(index < AREA_COUNT){
 
         if ((int) area[index].region == in_region && in_budget > area[index].total_expenses)
         {
@@ -649,7 +650,7 @@ void print_windmill_investment_return(Area area, Windmill windmill)
         printf("%d timer.\n", hours);
     
     
-     printf("Dette svare til at vindmøllen tjener: %.2lf Kr. om året\n", yearly_income);
+     printf("Dette svarer til at vindmøllen tjener: %.2lf Kr. om året\n", yearly_income);
      printf("Investeringen har et årligt afkast på: %.2lf %%\n", percent);
      printf("------------------------------------------------------\n");
 }
