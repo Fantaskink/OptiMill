@@ -1,4 +1,4 @@
-1 Koebenhavn 0 5.1 2 2 0 0
+1 Koebenhavn 0 5.1 2 2 3 0
 2 Aalborg 2 5.0 2 2 3 5
 3 Veksoe 0 5 4 2 1 3
 4 Skagen 2 7.1 5 0.5 30 20
