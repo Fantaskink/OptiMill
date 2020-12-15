@@ -1,2 +1,2 @@
-1 Vestas 90 80 2000
-2 Siemens 114 88 2625
+1 Vestas 80 90 2000
+2 Siemens 88 114 2625

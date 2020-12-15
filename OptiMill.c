@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <string.h>
 #define MAX_LEN 128             //Used when printing the optimill logo
 #define AREA_COUNT 25            //Amount of implemented areas
 #define WINDMILL_MODELS 2       //Amount of implemented windmill models
@@ -30,7 +29,6 @@ typedef struct Windmill
     int price;                //Price of the rotorblades and tower, in Danish Crowns
     int height;               //In meters
     int wing_span;            //In meters
-    int kW;                   //Calculated power production
     int kW_max;               //Maximum power production also denoted as the installed power
 
 } Windmill;
