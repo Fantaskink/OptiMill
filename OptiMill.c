@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <string.h>
 #define MAX_LEN 128             //Used when printing the optimill logo
 #define AREA_COUNT 25            //Amount of implemented areas
 #define WINDMILL_MODELS 2       //Amount of implemented windmill models
@@ -9,9 +8,9 @@
 #define PRICE_PER_KM 200000     //Price for cable digging being 200 kr pr. meter
 #define TURBINE_PRICE_PER_KW 5000 
 #define HOURS_IN_DAY 24
-#define HOURS_IN_WEEK 168
-#define HOURS_IN_MONTH 732      //Average of 30.5 days in a month
-#define HOURS_IN_YEAR 8784      //Average of 366 days in a year
+//#define HOURS_IN_WEEK 168
+#define HOURS_IN_MONTH 730      //Average of 8766/12 = 730.5 hours in a month
+#define HOURS_IN_YEAR 8766      //Average of 365.25 days in a year
 
 
 typedef enum region
@@ -30,7 +29,6 @@ typedef struct Windmill
     int price;                //Price of the rotorblades and tower, in Danish Crowns
     int height;               //In meters
     int wing_span;            //In meters
-    int kW;                   //Calculated power production
     int kW_max;               //Maximum power production also denoted as the installed power
 
 } Windmill;
@@ -231,6 +229,7 @@ int main(void)
                 break;
             case 0:
                 quit = 0;
+                break;
             default:
                 exit(EXIT_FAILURE);    
             }
@@ -600,7 +599,7 @@ double calc_windmill_income(Area area, Windmill windmill)
 //Prints investment return details
 void print_windmill_investment_return(Area area, Windmill windmill)
 {
-    int hours, days, weeks, months, years;
+    int hours, days, months, years;
     double percent;
     double income = calc_windmill_income(area, windmill);
     double yearly_income = income * HOURS_IN_YEAR;
