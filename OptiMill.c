@@ -7,10 +7,10 @@
 #define PRICE_PER_KWH 0.2       //The return price for selling 1 KWh of electricity
 #define PRICE_PER_KM 200000     //Price for cable digging being 200 kr pr. meter
 #define TURBINE_PRICE_PER_KW 5000 
-#define HOURS_IN_DAY 24
+#define HOURS_IN_DAY 24.0
 //#define HOURS_IN_WEEK 168
-#define HOURS_IN_MONTH 730      //Average of 8766/12 = 730.5 hours in a month
-#define HOURS_IN_YEAR 8766      //Average of 365.25 days in a year
+#define HOURS_IN_MONTH 730.0      //Average of 8766/12 = 730.5 hours in a month
+#define HOURS_IN_YEAR 8766.0      //Average of 365.25 days in a year
 
 
 typedef enum region
