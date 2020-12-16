@@ -293,7 +293,7 @@ int get_wind_turbine()
 {
     char string[] = "Vælg vindmølle:\n1. Vestas V90 - 2MW\n2. Siemens SG 2.6MW - 114\n";
 
-    return(get_input(string, 1, 2));
+    return(get_input(string, 1,  2));
 }
 
 int get_user_continue()
