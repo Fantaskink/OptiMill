@@ -64,7 +64,7 @@ int get_input(const char *string, int a, int b);
 double calc_total_expenses(Area area, Windmill windmill);
 double calc_area_expenses(Area area, Windmill windmill);
 double calc_digging_expenses(Area area);
-double calc_foundation_expenses(Area area, Windmill windmill);
+double calc_foundation_expenses(Windmill windmill);
 
 double calc_power_output(Area area, Windmill windmill);
 double calc_wind_shear(Area area, Windmill windmill);
@@ -464,7 +464,7 @@ double calc_area_expenses(Area area, Windmill windmill)
 
     area_expense =
         (calc_digging_expenses(area) +
-        calc_foundation_expenses(area, windmill) +
+        calc_foundation_expenses(windmill) +
         transport_expense);
 
     return(area_expense);
@@ -477,7 +477,7 @@ double calc_digging_expenses(Area area)
 }
 
 //Approximation of the expense used to cast concrete
-double calc_foundation_expenses(Area area, Windmill windmill)
+double calc_foundation_expenses(Windmill windmill)
 {
     int foundation_price_pr_kw = 290;
 
