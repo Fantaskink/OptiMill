@@ -534,25 +534,24 @@ int find_best_area_index(Area area[], int in_region, int in_budget){
 //Returns kW output from windmill calculated with given areas windspeed
 double calc_power_output(Area area, Windmill windmill)
 {
-    double W;
-    double kW;
+    double P;
     double wind_turbine_efficiency = 0.40;
     double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2;
 
-    W = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
+    P = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
     
     //Change from watt to kW
-    kW = W / 1000; 
+    P = P / 1000; 
     
-    return kW;
+    return P;
 }
 
 //Returns the wind speed in windmills height 
 double calc_wind_shear(Area area, Windmill windmill)
 {
-    double wind_shear, roughness_length = 0;
+    double wind_shear, roughness_length;
 
     //Converts roughness of the given area into roughness length
     if(area.roughness == 0)
@@ -581,7 +580,13 @@ double calc_wind_shear(Area area, Windmill windmill)
 
     else if(area.roughness == 4)
         roughness_length = 1.6;
-
+    
+    else{
+        printf("Kunne ikke konvertere ruhedsklasse: %.2f til ruhedslængde!", area.roughness);
+        printf("Sætter ruhedslængden til 0.1");
+        roughness_length = 0.1;
+    }
+    
     //Formula for finding exact windspeed at a given height
     /* v = v_ref * ln(z/z_0) / ln(z_ref/z_0)   */
     wind_shear = area.wind_speed * (log(windmill.height/roughness_length)/(log(10/roughness_length))); 
