@@ -18,15 +18,15 @@ Gruppemedlemmer:
 
 Hent github repository ved brug af git clone eller download zip filen.
 
-Compile og run på Mac 
+Kompiléring og kørsel på Mac 
 ```console
-  gcc-10 Optimill.c -o optimill
+  gcc-10 OptiMill.c -o optimill
   ./optimill.out
 ```
 
-Compile og run på Windows 10
+Kompiléring og kørsel på Windows 10
 ```console
-  gcc Optimill.c -o optimill
+  gcc OptiMill.c -o optimill
   optimill.exe
 ```
 
