@@ -1,15 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define MAX_LEN 128             //Used when printing the optimill logo
-#define AREA_COUNT 25           //Amount of implemented areas
-#define WINDMILL_MODELS 2       //Amount of implemented windmill models
-#define PRICE_PER_KWH 0.2       //The return price for selling 1 KWh of electricity
-#define PRICE_PER_KM 200000     //Price for cable digging being 200 kr pr. meter
-#define TURBINE_PRICE_PER_KW 5000
+#define MAX_LEN 128                 //Used when printing the optimill logo
+#define AREA_COUNT 25               //Amount of implemented areas
+#define WINDMILL_MODELS 2           //Amount of implemented windmill models
+#define PRICE_PER_KWH 0.2           //The return price for selling 1 KWh of electricity
+#define PRICE_PER_KM 200000         //Price for cable digging being 200 kr pr. meter
+#define TRANSPORT_COST 100000       //Approximate transport cost for any given windturbine.
+#define FOUNDATION_COST_PER_KW 290  //Concrete foundation cost
+#define TURBINE_PRICE_PER_KW 5000   //Turbine head/tower cost
+#define AIR_DENSITY 1.225           //Air density at normal atmospheric pressure
+#define POWER_COEFFICIENT 0.40      //The windturbines power coefficiency
 #define HOURS_IN_DAY 24
-#define HOURS_IN_MONTH 730      //Average of 8766/12 = 730.5 hours in a month
-#define HOURS_IN_YEAR 8766      //Average of 365.25 days in a year
+#define HOURS_IN_MONTH 730          
+#define HOURS_IN_YEAR 8766          
 
 
 typedef enum region
@@ -457,14 +461,11 @@ double calc_total_expenses(Area area, Windmill windmill)
 //Calculates the installation cost for placing a windmill in given area.
 double calc_area_expenses(Area area, Windmill windmill)
 {
-    int transport_expense = 100000;
-
     double area_expense;
 
     area_expense =
-        (calc_digging_expenses(area) +
-        calc_foundation_expenses(windmill) +
-        transport_expense);
+        calc_digging_expenses(area) +
+        calc_foundation_expenses(windmill) + TRANSPORT_COST;
 
     return(area_expense);
 }
@@ -478,9 +479,7 @@ double calc_digging_expenses(Area area)
 //Approximation of the expense used to cast concrete
 double calc_foundation_expenses(Windmill windmill)
 {
-    int foundation_price_pr_kw = 290;
-
-    return(windmill.kW_max * foundation_price_pr_kw);
+    return(windmill.kW_max * FOUNDATION_COST_PER_KW);
 }
 
 //--------------------Sorting algorithm functions-------------------
@@ -534,13 +533,10 @@ int find_best_area_index(Area area[], int in_region, int in_budget)
 //Returns kW output from windmill calculated with given area's windspeed
 double calc_power_output(Area area, Windmill windmill)
 {
-    double P;
-    double wind_turbine_efficiency = 0.40;
-    double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
     double r = windmill.wing_span / 2.0;
 
-    P = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
+    double P = (M_PI/2) * pow(r,2) * pow(v,3) * AIR_DENSITY * POWER_COEFFICIENT;
     
     //Change from watt to kW
     P = P / 1000; 
@@ -609,8 +605,8 @@ void print_windmill_investment_return(Area area, Windmill windmill)
     double income = calc_windmill_income(area, windmill);
     double yearly_income = income * HOURS_IN_YEAR / 1000000;
     
-    hours = windmill.price / income;
-    percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
+    hours = area.total_expenses / income;
+    percent = ((income * HOURS_IN_YEAR) / area.total_expenses) * 100;
 
     years = hours / HOURS_IN_YEAR;
     hours = hours % HOURS_IN_YEAR;
