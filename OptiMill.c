@@ -37,12 +37,12 @@ typedef struct Area
     int id;                   //ID of the area
     char name[50];            //Name of the area
     region region;            //Region in which the area is located
-    double wind_speed;        //Measuered wind speed of area in meters per second in 10 meters height
-    double land_height;       //Landheight from sea level, in meters
+    double wind_speed;        //Measured wind speed of area in meters per second in 10 meters' height
+    double land_height;       //Land height from sea level, in meters
     double roughness;         //Roughness class: 0..4
     double dist_to_house;     //The distance to the nearest house in km
-    double dist_to_powergrid; //The distance to the nearest tranformerstation capable of handling the windmills capacity, in km
-    double expenses;          //Installation expenses also denoted terrain expenses, in Danish Crowns
+    double dist_to_powergrid; //The distance to the nearest transformer substation capable of handling the windmill's capacity, in km
+    double expenses;          //Installation expenses also denoted as terrain expenses, in Danish Crowns
     double total_expenses;    //Expenses including wind turbine expenses
     double kW_output;         //kW output of the specific area with regards to chosen wind turbine
     double inv_return;        //Monetary return of specific windmill when placed in specific area
@@ -144,13 +144,13 @@ int main(void)
     //Get the array length of our Area struct
     int arr_len = sizeof(area) / sizeof(Area);
 
-    //Get the user inputs atleast once before looping
+    //Get the user's inputs atleast once before looping
     region = get_region() - 1;
     budget = get_budget();
     wind_turbine = get_wind_turbine() - 1;
     priority = get_priority();
 
-    //Run the user interractions
+    //Run the user interactions
     while (quit)
     {
         printf("Dine valg:\n");
@@ -311,7 +311,7 @@ int get_input(const char *string, int a, int b)
         printf("%s", string);
     }
 
-    /*If some of these criteria get back as true then it means the user inputted something out of range
+    /*If some of these criteria are true then it means the user inputted something out of range
      and the user gets prompted with the incomming string once again*/
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < a || input > b);
     
@@ -325,7 +325,7 @@ int clean_stdin()
 }
 
 //---------------------------------------------------------------------
-//These next three functions returns a string representation of the choice to be displayed to the user
+//These next three functions return a string representation of the choice to be displayed to the user
 const char *get_input_region_name(region  region)
 {
     char *result;
@@ -484,7 +484,7 @@ double calc_foundation_expenses(Windmill windmill)
 }
 
 //--------------------Sorting algorithm functions-------------------
-//Comparator function for sorting areas expenses from low to high
+//Comparator function for sorting areas' expenses from low to high
 int exp_comparator(const void *p, const void *q) 
 { 
     Area *area1 = (Area *)p;
@@ -502,7 +502,7 @@ int kW_comparator(const void *p, const void *q)
     return(int)(area2->kW_output - area1->kW_output);
 }
 
-//Compares two areas investment return and sorts high to low
+//Compares two areas' investment return and sorts from high to low
 int invest_comparator(const void *p, const void *q)
 {
     Area *area1 = (Area *)p;
@@ -514,7 +514,8 @@ int invest_comparator(const void *p, const void *q)
 
 //---------------------------------------------------------------------
 //Returns back the index in the area struct array where the region matches and total expenses is in the budget range
-int find_best_area_index(Area area[], int in_region, int in_budget){
+int find_best_area_index(Area area[], int in_region, int in_budget)
+{
 
     int index = 0;
 
@@ -530,7 +531,7 @@ int find_best_area_index(Area area[], int in_region, int in_budget){
     return index;
 }
 
-//Returns kW output from windmill calculated with given areas windspeed
+//Returns kW output from windmill calculated with given area's windspeed
 double calc_power_output(Area area, Windmill windmill)
 {
     double W;
@@ -548,7 +549,7 @@ double calc_power_output(Area area, Windmill windmill)
     return kW;
 }
 
-//Returns the wind speed in windmills height 
+//Returns the wind speed in windmill's height 
 double calc_wind_shear(Area area, Windmill windmill)
 {
     double wind_shear, roughness_length = 0;
