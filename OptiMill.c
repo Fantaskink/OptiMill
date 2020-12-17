@@ -2,13 +2,12 @@
 #include <stdlib.h>
 #include <math.h>
 #define MAX_LEN 128             //Used when printing the optimill logo
-#define AREA_COUNT 25            //Amount of implemented areas
+#define AREA_COUNT 25           //Amount of implemented areas
 #define WINDMILL_MODELS 2       //Amount of implemented windmill models
 #define PRICE_PER_KWH 0.2       //The return price for selling 1 KWh of electricity
 #define PRICE_PER_KM 200000     //Price for cable digging being 200 kr pr. meter
-#define TURBINE_PRICE_PER_KW 5000 
+#define TURBINE_PRICE_PER_KW 5000
 #define HOURS_IN_DAY 24
-//#define HOURS_IN_WEEK 168
 #define HOURS_IN_MONTH 730      //Average of 8766/12 = 730.5 hours in a month
 #define HOURS_IN_YEAR 8766      //Average of 365.25 days in a year
 
@@ -38,12 +37,12 @@ typedef struct Area
     int id;                   //ID of the area
     char name[50];            //Name of the area
     region region;            //Region in which the area is located
-    double wind_speed;        //Measuered wind speed of area in meters per second in 10 meters height
-    double land_height;       //Landheight from sea level, in meters
+    double wind_speed;        //Measured wind speed of area in meters per second in 10 meters' height
+    double land_height;       //Land height from sea level, in meters
     double roughness;         //Roughness class: 0..4
     double dist_to_house;     //The distance to the nearest house in km
-    double dist_to_powergrid; //The distance to the nearest tranformerstation capable of handling the windmills capacity, in km
-    double expenses;          //Installation expenses also denoted terrain expenses, in Danish Crowns
+    double dist_to_powergrid; //The distance to the nearest transformer substation capable of handling the windmill's capacity, in km
+    double expenses;          //Installation expenses also denoted as terrain expenses, in Danish Crowns
     double total_expenses;    //Expenses including wind turbine expenses
     double kW_output;         //kW output of the specific area with regards to chosen wind turbine
     double inv_return;        //Monetary return of specific windmill when placed in specific area
@@ -51,7 +50,7 @@ typedef struct Area
 
 //Prototypes
 int clean_stdin();
-const char *get_input_region_name(int a);
+const char *get_input_region_name(region region);
 const char *get_manufacturer(int a);
 const char *get_input_priority(int a);
 int get_region();
@@ -64,7 +63,7 @@ int get_input(const char *string, int a, int b);
 double calc_total_expenses(Area area, Windmill windmill);
 double calc_area_expenses(Area area, Windmill windmill);
 double calc_digging_expenses(Area area);
-double calc_foundation_expenses(Area area, Windmill windmill);
+double calc_foundation_expenses(Windmill windmill);
 
 double calc_power_output(Area area, Windmill windmill);
 double calc_wind_shear(Area area, Windmill windmill);
@@ -145,13 +144,13 @@ int main(void)
     //Get the array length of our Area struct
     int arr_len = sizeof(area) / sizeof(Area);
 
-    //Get the user inputs atleast once before looping
+    //Get the user's inputs atleast once before looping
     region = get_region() - 1;
     budget = get_budget();
     wind_turbine = get_wind_turbine() - 1;
     priority = get_priority();
 
-    //Run the user interractions
+    //Run the user interactions
     while (quit)
     {
         printf("Dine valg:\n");
@@ -292,7 +291,7 @@ int get_wind_turbine()
 {
     char string[] = "Vælg vindmølle:\n1. Vestas V90 - 2MW\n2. Siemens SG 2.6MW - 114\n";
 
-    return(get_input(string, 1, 2));
+    return(get_input(string, 1,  2));
 }
 
 int get_user_continue()
@@ -312,7 +311,7 @@ int get_input(const char *string, int a, int b)
         printf("%s", string);
     }
 
-    /*If some of these criteria get back as true then it means the user inputted something out of range
+    /*If some of these criteria are true then it means the user inputted something out of range
      and the user gets prompted with the incomming string once again*/
     while(((scanf("%d%c", &input, &c)!=2 || c!='\n') && clean_stdin()) || input < a || input > b);
     
@@ -326,11 +325,11 @@ int clean_stdin()
 }
 
 //---------------------------------------------------------------------
-//These next three functions returns a string representation of the choice to be displayed to the user
-const char *get_input_region_name(int a)
+//These next three functions return a string representation of the choice to be displayed to the user
+const char *get_input_region_name(region  region)
 {
     char *result;
-    switch (a)
+    switch (region)
     {
     case 0:
         result = "Hovedstaden";
@@ -408,28 +407,28 @@ const char *get_input_priority(int a)
 void print_area_data(Area area)
 {
     printf("------------------------------------------------------\n");
-    printf("ID: \t\t\t  %d\n", area.id);
-    printf("Navn:\t\t\t  %s\n", area.name);
-    printf("Region:\t\t\t  %s\n", get_input_region_name(area.region));
-    printf("Vindhastighed:\t\t  %.2f m/s\n", area.wind_speed);
-    printf("Landhoejde:\t\t  %.2f m\n", area.land_height);
-    printf("Ruhedsklasse:\t\t  %.2f\n", area.roughness);
-    printf("Afstand til naermeste hus:%.2f km\n", area.dist_to_house);
-    printf("Afstand til elnettet:\t  %.2f km\n", area.dist_to_powergrid);
-    printf("Energi produktion:\t  %.2f kW\n", area.kW_output);
-    printf("Terraenomkostninger:\t  %.2f kr\n", area.expenses);
-    printf("Samlede omkostninger:\t  %.2f kr\n", area.total_expenses);
+    printf("ID: \t\t\t\t%d\n", area.id);
+    printf("Navn:\t\t\t\t%s\n", area.name);
+    printf("Region:\t\t\t\t%s\n", get_input_region_name(area.region));
+    printf("Vindhastighed:\t\t\t%.2f m/s\n", area.wind_speed);
+    printf("Landhøjde:\t\t\t%.2f m\n", area.land_height);
+    printf("Ruhedsklasse:\t\t\t%.2f\n", area.roughness);
+    printf("Afstand til nærmeste hus:\t%.2f km\n", area.dist_to_house);
+    printf("Afstand til elnettet:\t\t%.2f km\n", area.dist_to_powergrid);
+    printf("Energi produktion:\t\t%.2f kW\n", area.kW_output);
+    printf("Terrænomkostninger:\t\t%.2f kr\n", area.expenses);
+    printf("Samlede omkostninger:\t\t%.2f kr\n", area.total_expenses);
     printf("------------------------------------------------------\n");
 }
 //Prints all the information for the chosen windmill model
 void print_windmill_model(Windmill windmill){
 	printf("------------------------------------------------------\n");
-	printf("ID: \t\t\t  %d\n", windmill.id);
-	printf("Producent:\t\t\t  %s\n", windmill.name);
-	printf("Vejl. Pris:\t\t  %d kr.\n", windmill.price);
-	printf("Højde:\t\t\t  %d m\n", windmill.height);
-	printf("Vingefang:\t\t  %d m\n", windmill.wing_span);
-	printf("Installeret effekt:\t\t  %d kW\n", windmill.kW_max);
+	printf("ID: \t\t\t\t%d\n", windmill.id);
+	printf("Producent:\t\t\t%s\n", windmill.name);
+	printf("Vejl. Pris:\t\t\t%d kr.\n", windmill.price);
+	printf("Højde:\t\t\t\t%d m\n", windmill.height);
+	printf("Vingefang:\t\t\t%d m\n", windmill.wing_span);
+	printf("Installeret effekt:\t\t%d kW\n", windmill.kW_max);
 	printf("------------------------------------------------------\n");
 }
 
@@ -464,7 +463,7 @@ double calc_area_expenses(Area area, Windmill windmill)
 
     area_expense =
         (calc_digging_expenses(area) +
-        calc_foundation_expenses(area, windmill) +
+        calc_foundation_expenses(windmill) +
         transport_expense);
 
     return(area_expense);
@@ -477,7 +476,7 @@ double calc_digging_expenses(Area area)
 }
 
 //Approximation of the expense used to cast concrete
-double calc_foundation_expenses(Area area, Windmill windmill)
+double calc_foundation_expenses(Windmill windmill)
 {
     int foundation_price_pr_kw = 290;
 
@@ -485,7 +484,7 @@ double calc_foundation_expenses(Area area, Windmill windmill)
 }
 
 //--------------------Sorting algorithm functions-------------------
-//Comparator function for sorting areas expenses from low to high
+//Comparator function for sorting areas' expenses from low to high
 int exp_comparator(const void *p, const void *q) 
 { 
     Area *area1 = (Area *)p;
@@ -503,7 +502,7 @@ int kW_comparator(const void *p, const void *q)
     return(int)(area2->kW_output - area1->kW_output);
 }
 
-//Compares two areas investment return and sorts high to low
+//Compares two areas' investment return and sorts from high to low
 int invest_comparator(const void *p, const void *q)
 {
     Area *area1 = (Area *)p;
@@ -515,7 +514,8 @@ int invest_comparator(const void *p, const void *q)
 
 //---------------------------------------------------------------------
 //Returns back the index in the area struct array where the region matches and total expenses is in the budget range
-int find_best_area_index(Area area[], int in_region, int in_budget){
+int find_best_area_index(Area area[], int in_region, int in_budget)
+{
 
     int index = 0;
 
@@ -531,14 +531,14 @@ int find_best_area_index(Area area[], int in_region, int in_budget){
     return index;
 }
 
-//Returns kW output from windmill calculated with given areas windspeed
+//Returns kW output from windmill calculated with given area's windspeed
 double calc_power_output(Area area, Windmill windmill)
 {
     double P;
     double wind_turbine_efficiency = 0.40;
     double air_dens = 1.225;
     double v = calc_wind_shear(area, windmill);
-    double r = windmill.wing_span / 2;
+    double r = windmill.wing_span / 2.0;
 
     P = (M_PI/2) * pow(r,2) * pow(v,3) * air_dens * wind_turbine_efficiency;
     
@@ -548,7 +548,7 @@ double calc_power_output(Area area, Windmill windmill)
     return P;
 }
 
-//Returns the wind speed in windmills height 
+//Returns the wind speed in windmill's height 
 double calc_wind_shear(Area area, Windmill windmill)
 {
     double wind_shear, roughness_length;
@@ -607,24 +607,19 @@ void print_windmill_investment_return(Area area, Windmill windmill)
     int hours, days, months, years;
     double percent;
     double income = calc_windmill_income(area, windmill);
-    double yearly_income = income * HOURS_IN_YEAR;
+    double yearly_income = income * HOURS_IN_YEAR / 1000000;
     
     hours = windmill.price / income;
-    days = windmill.price / income / HOURS_IN_DAY;
-    months = windmill.price / income / HOURS_IN_MONTH;
-    years = windmill.price / income / HOURS_IN_YEAR;
     percent = ((income * HOURS_IN_YEAR) / windmill.price) * 100;
 
-    days = hours / 24;
-    hours = hours % 24;
-     
-    months = days / 31;
-    days = days % 31;
-    
-    years = months / 12;
-    months = months % 12;
+    years = hours / HOURS_IN_YEAR;
+    hours = hours % HOURS_IN_YEAR;
 
-    years = years % 12;
+    months = hours / HOURS_IN_MONTH;
+    hours = hours % HOURS_IN_MONTH;
+
+    days = hours / HOURS_IN_DAY;
+    hours = hours % HOURS_IN_DAY;
 
     printf("Investeringsdetaljer\n");
     printf("------------------------------------------------------\n");
@@ -632,7 +627,6 @@ void print_windmill_investment_return(Area area, Windmill windmill)
 
     if (years > 0) 
         printf("%d år, ", years);
-    
 
     if (months > 0) 
     {
@@ -654,7 +648,7 @@ void print_windmill_investment_return(Area area, Windmill windmill)
         printf("%d timer.\n", hours);
     
     
-     printf("Dette svarer til at vindmøllen tjener: %.2lf Kr. om året\n", yearly_income);
+     printf("Dette svarer til at vindmøllen tjener: %.2lf mio. kr. om året\n", yearly_income);
      printf("Investeringen har et årligt afkast på: %.2lf %%\n", percent);
      printf("------------------------------------------------------\n");
 }
