@@ -335,23 +335,23 @@ const char *get_input_region_name(region  region)
     char *result;
     switch (region)
     {
-    case 0:
+    case Hovedstaden:
         result = "Hovedstaden";
         break;
 
-    case 1:
+    case Syddanmark:
         result = "Syddanmark";
         break;
 
-    case 2:
+    case Nordjylland:
         result = "Nordjylland";
         break;
 
-    case 3:
+    case Midtjylland:
         result = "Midtjylland";
         break;
 
-    case 4:
+    case Sjaelland:
         result = "Sjælland";
         break;
 
